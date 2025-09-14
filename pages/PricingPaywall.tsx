@@ -97,7 +97,7 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
 
       console.log(`🚀 Redirecting to Stripe checkout for ${planId} plan (${priceId})`);
 
-      // DIRECT REDIRECT TO STRIPE CHECKOUT - NO BACKEND NEEDED!
+      // DIRECT REDIRECT TO STRIPE CHECKOUT - FIXED PARAMETERS
       const { error } = await stripe.redirectToCheckout({
         lineItems: [{ 
           price: priceId, 
@@ -106,8 +106,6 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
         mode: 'subscription',
         successUrl: `${window.location.origin}?success=true&plan=${planId}&session_id={CHECKOUT_SESSION_ID}`,
         cancelUrl: `${window.location.origin}?canceled=true&plan=${planId}`,
-        allowPromotionCodes: true,
-        billingAddressCollection: 'required',
       });
 
       if (error) {
