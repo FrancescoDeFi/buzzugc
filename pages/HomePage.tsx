@@ -90,7 +90,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
               </div>
               <div className="hidden md:flex space-x-6">
                 <a href="#features" className="text-gray-700 hover:text-black transition-colors">Features</a>
-                <a href="#pricing" className="text-gray-700 hover:text-black transition-colors">Pricing</a>
+                <a href="/pricing" className="text-gray-700 hover:text-black transition-colors">Pricing</a>
                 <a href="#showcase" className="text-gray-700 hover:text-black transition-colors">Examples</a>
                 <a href="#faq" className="text-gray-700 hover:text-black transition-colors">FAQ</a>
               </div>

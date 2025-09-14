@@ -16,6 +16,21 @@ const App: React.FC = () => {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [paymentSessionId, setPaymentSessionId] = useState<string | null>(null);
+  const [path, setPath] = useState<string>(window.location.pathname);
+
+  // Simple path-based routing
+  useEffect(() => {
+    const onPopState = () => setPath(window.location.pathname);
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  const navigate = useCallback((to: string) => {
+    if (window.location.pathname !== to) {
+      window.history.pushState({}, '', to);
+      setPath(to);
+    }
+  }, []);
 
   // Check URL parameters for payment success
   useEffect(() => {
@@ -106,6 +121,10 @@ const App: React.FC = () => {
   }, []);
 
   if (showHomePage) {
+    // If route is /pricing, show pricing page directly (public URL)
+    if (path === '/pricing') {
+      return <PricingPaywall onSelectPlan={() => {}} onSkip={() => navigate('/')} />;
+    }
     return <HomePage onNavigateToLogin={handleNavigateToLogin} />;
   }
 
@@ -119,8 +138,8 @@ const App: React.FC = () => {
     );
   }
 
-  if (showPricingPaywall && user && !selectedPlan) {
-    return <PricingPaywall onSelectPlan={handleSelectPlan} onSkip={handleSkipPricing} />;
+  if ((showPricingPaywall && user && !selectedPlan) || path === '/pricing') {
+    return <PricingPaywall onSelectPlan={handleSelectPlan} onSkip={() => navigate('/')} />;
   }
 
   return (

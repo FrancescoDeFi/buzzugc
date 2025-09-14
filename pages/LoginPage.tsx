@@ -66,8 +66,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         return;
       }
 
-      // Get the correct redirect URL
-      const redirectTo = window.location.origin;
+      // After Google OAuth, return users to Pricing page
+      const redirectTo = `${window.location.origin}/pricing`;
       console.log('Google OAuth redirect URL:', redirectTo);
 
       const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
