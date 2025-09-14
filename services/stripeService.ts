@@ -1,6 +1,6 @@
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 
-// Initialize Stripe
+// Initialize Stripe (client-only)
 let stripePromise: Promise<Stripe | null>;
 
 const getStripe = () => {
@@ -75,75 +75,50 @@ export interface CheckoutSessionData {
   cancelUrl: string;
 }
 
-// Create a checkout session
-export const createCheckoutSession = async (data: CheckoutSessionData): Promise<{ sessionId: string } | null> => {
-  try {
-    console.log('Creating checkout session with data:', data);
+// Client-only redirect to Stripe Checkout using price ID
+export const checkoutWithPrice = async (
+  planId: string,
+  opts?: { successUrl?: string; cancelUrl?: string; customerEmail?: string }
+): Promise<{ error?: any }> => {
+  const stripe = await getStripe();
+  if (!stripe) {
+    return { error: new Error('Stripe not initialized. Missing publishable key?') };
+  }
 
-    // Call the backend API to create a checkout session
-    const response = await fetch('/api/create-checkout-session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+  const price = STRIPE_PRICES.find(p => p.planId === planId);
+  if (!price) {
+    return { error: new Error(`Unknown planId: ${planId}`) };
+  }
+
+  const successUrl = opts?.successUrl ?? `${window.location.origin}?success=true&plan=${planId}&session_id={CHECKOUT_SESSION_ID}`;
+  const cancelUrl = opts?.cancelUrl ?? `${window.location.origin}?canceled=true&plan=${planId}`;
+
+  const result = await stripe.redirectToCheckout({
+    lineItems: [
+      {
+        price: price.priceId,
+        quantity: 1,
       },
-      body: JSON.stringify(data),
-    });
+    ],
+    mode: price.interval ? 'subscription' : 'payment',
+    successUrl,
+    cancelUrl,
+    customerEmail: opts?.customerEmail,
+  });
 
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      console.error('API error response:', responseData);
-      throw new Error(responseData.details || responseData.error || `HTTP error! status: ${response.status}`);
-    }
-
-    console.log('Checkout session created successfully:', responseData);
-    return responseData;
-  } catch (error) {
-    console.error('Error creating checkout session:', error);
-    // Show more details in development
-    if (import.meta.env.DEV) {
-      alert(`Checkout error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-    return null;
+  if (result.error) {
+    console.error('Stripe checkout error:', result.error);
+    return { error: result.error };
   }
-};
-
-// Redirect to Stripe Checkout
-export const redirectToCheckout = async (sessionId: string): Promise<{ error?: any }> => {
-  try {
-    const stripe = await getStripe();
-    if (!stripe) {
-      throw new Error('Stripe not initialized');
-    }
-
-    const result = await stripe.redirectToCheckout({
-      sessionId: sessionId,
-    });
-
-    if (result.error) {
-      console.error('Stripe checkout error:', result.error);
-      return { error: result.error };
-    }
-
-    return {};
-  } catch (error) {
-    console.error('Error redirecting to checkout:', error);
-    return { error };
-  }
+  return {};
 };
 
 // Handle successful payment (typically called from a success page)
 export const handleSuccessfulPayment = async (sessionId: string) => {
   try {
-    // In a real application, you would verify the session on your backend
-    // and update the user's subscription status in your database
-    console.log('Payment successful for session:', sessionId);
-    
-    // This is where you would:
-    // 1. Verify the session with Stripe
-    // 2. Update user's subscription in your database
-    // 3. Grant access to paid features
-    
+    // Client-only: we cannot verify on the client.
+    // This is a no-op placeholder to keep the UI flow consistent.
+    console.log('Payment successful (client-only). session:', sessionId);
     return { success: true };
   } catch (error) {
     console.error('Error handling successful payment:', error);

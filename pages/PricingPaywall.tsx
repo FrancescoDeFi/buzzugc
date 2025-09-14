@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { checkoutWithPrice } from '../services/stripeService';
 
 interface PricingPaywallProps {
   onSelectPlan: (planId: string) => void;
@@ -76,59 +77,11 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
         return;
       }
 
-      // Get Stripe instance - CLIENT-ONLY APPROACH!
-      const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-
-      if (!stripeKey) {
-        console.error('❌ Stripe publishable key is not configured');
-        throw new Error('Payment system is not configured. Please contact support.');
-      }
-
-      console.log('Loading Stripe with key:', stripeKey.substring(0, 20) + '...');
-
-      let stripe;
-      try {
-        const { loadStripe } = await import('@stripe/stripe-js');
-        stripe = await loadStripe(stripeKey);
-      } catch (loadError) {
-        console.error('❌ Failed to load Stripe library:', loadError);
-        throw new Error('Payment system unavailable. Please try again later.');
-      }
-
-      if (!stripe) {
-        throw new Error('Stripe failed to initialize. Please check your connection and try again.');
-      }
-
-      // Direct price IDs - YOUR ACTUAL STRIPE PRICE IDS
-      const priceIds = {
-        starter: 'price_1S7FVWCyEFxXrv4D5I2muWZ4',
-        professional: 'price_1S7FX0CyEFxXrv4DtPmuax2n'
-      };
-
-      const priceId = priceIds[planId as keyof typeof priceIds];
-      if (!priceId) {
-        throw new Error('Invalid plan selected');
-      }
-
-      console.log(`🚀 Redirecting to Stripe checkout for ${planId} plan (${priceId})`);
-
-      // DIRECT REDIRECT TO STRIPE CHECKOUT - FIXED PARAMETERS
-      let error;
-      try {
-        const result = await stripe.redirectToCheckout({
-          lineItems: [{
-            price: priceId,
-            quantity: 1
-          }],
-          mode: 'subscription',
-          successUrl: `${window.location.origin}?success=true&plan=${planId}&session_id={CHECKOUT_SESSION_ID}`,
-          cancelUrl: `${window.location.origin}?canceled=true&plan=${planId}`,
-        });
-        error = result?.error;
-      } catch (checkoutError) {
-        console.error('❌ redirectToCheckout failed:', checkoutError);
-        error = checkoutError;
-      }
+      // Client-only redirect via shared Stripe service
+      const { error } = await checkoutWithPrice(planId, {
+        successUrl: `${window.location.origin}?success=true&plan=${planId}&session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${window.location.origin}?canceled=true&plan=${planId}`,
+      });
 
       if (error) {
         console.error('❌ Stripe checkout error:', error);
@@ -138,7 +91,6 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
       }
 
       // If we reach here, the redirect should have happened
-      // This line should not execute if redirect was successful
       console.log('⚠️ Redirect may have failed - user is still on page');
       setIsProcessing(false);
 
@@ -183,6 +135,18 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Start creating professional AI videos today. Pick the plan that fits your needs and scale as you grow.
           </p>
+        </div>
+
+        {/* Debug Info */}
+        <div className="text-center mb-8 p-4 bg-gray-100 rounded-lg">
+          <p className="text-sm text-gray-600">
+            🔧 Debug: Stripe Key Status: {import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ? '✅ Loaded' : '❌ Missing'}
+          </p>
+          {import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY && (
+            <p className="text-xs text-gray-500 mt-1">
+              Key: {import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY.substring(0, 20)}...
+            </p>
+          )}
         </div>
 
         {/* Pricing Cards */}
