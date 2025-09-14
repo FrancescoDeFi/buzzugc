@@ -432,9 +432,8 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
                 </div>
                 <span className="ml-2 text-xl font-semibold">buzzUGC</span>
               </div>
-              <p className="text-gray-400 text-sm">
-                The fastest way to create AI videos
-              </p>
+              <p className="text-gray-400 text-sm">The fastest way to create AI videos</p>
+              <p className="text-gray-400 text-sm">Vienna, Austria</p>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Product</h4>
@@ -462,8 +461,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
             </div>
           </div>
           <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
-            <p>© 2024 BuzzUGC. All rights reserved.</p>
-            <p>Vienna, Austria</p>
+            <p>© 2025 BuzzUGC. All rights reserved.</p>
           </div>
         </div>
       </footer>
