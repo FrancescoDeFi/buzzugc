@@ -77,11 +77,26 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
       }
 
       // Get Stripe instance - CLIENT-ONLY APPROACH!
-      const { loadStripe } = await import('@stripe/stripe-js');
-      const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+      const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+
+      if (!stripeKey) {
+        console.error('❌ Stripe publishable key is not configured');
+        throw new Error('Payment system is not configured. Please contact support.');
+      }
+
+      console.log('Loading Stripe with key:', stripeKey.substring(0, 20) + '...');
+
+      let stripe;
+      try {
+        const { loadStripe } = await import('@stripe/stripe-js');
+        stripe = await loadStripe(stripeKey);
+      } catch (loadError) {
+        console.error('❌ Failed to load Stripe library:', loadError);
+        throw new Error('Payment system unavailable. Please try again later.');
+      }
 
       if (!stripe) {
-        throw new Error('Stripe failed to load. Please check your connection and try again.');
+        throw new Error('Stripe failed to initialize. Please check your connection and try again.');
       }
 
       // Direct price IDs - YOUR ACTUAL STRIPE PRICE IDS
@@ -98,15 +113,22 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
       console.log(`🚀 Redirecting to Stripe checkout for ${planId} plan (${priceId})`);
 
       // DIRECT REDIRECT TO STRIPE CHECKOUT - FIXED PARAMETERS
-      const { error } = await stripe.redirectToCheckout({
-        lineItems: [{ 
-          price: priceId, 
-          quantity: 1 
-        }],
-        mode: 'subscription',
-        successUrl: `${window.location.origin}?success=true&plan=${planId}&session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: `${window.location.origin}?canceled=true&plan=${planId}`,
-      });
+      let error;
+      try {
+        const result = await stripe.redirectToCheckout({
+          lineItems: [{
+            price: priceId,
+            quantity: 1
+          }],
+          mode: 'subscription',
+          successUrl: `${window.location.origin}?success=true&plan=${planId}&session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: `${window.location.origin}?canceled=true&plan=${planId}`,
+        });
+        error = result?.error;
+      } catch (checkoutError) {
+        console.error('❌ redirectToCheckout failed:', checkoutError);
+        error = checkoutError;
+      }
 
       if (error) {
         console.error('❌ Stripe checkout error:', error);
