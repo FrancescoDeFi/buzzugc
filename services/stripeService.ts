@@ -78,6 +78,8 @@ export interface CheckoutSessionData {
 // Create a checkout session
 export const createCheckoutSession = async (data: CheckoutSessionData): Promise<{ sessionId: string } | null> => {
   try {
+    console.log('Creating checkout session with data:', data);
+
     // Call the backend API to create a checkout session
     const response = await fetch('/api/create-checkout-session', {
       method: 'POST',
@@ -87,14 +89,21 @@ export const createCheckoutSession = async (data: CheckoutSessionData): Promise<
       body: JSON.stringify(data),
     });
 
+    const responseData = await response.json();
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      console.error('API error response:', responseData);
+      throw new Error(responseData.details || responseData.error || `HTTP error! status: ${response.status}`);
     }
 
-    const session = await response.json();
-    return session;
+    console.log('Checkout session created successfully:', responseData);
+    return responseData;
   } catch (error) {
     console.error('Error creating checkout session:', error);
+    // Show more details in development
+    if (import.meta.env.DEV) {
+      alert(`Checkout error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
     return null;
   }
 };

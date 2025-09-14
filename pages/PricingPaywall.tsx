@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { createCheckoutSession, redirectToCheckout, getPriceByPlanId } from '../services/stripeService';
 
 interface PricingPaywallProps {
   onSelectPlan: (planId: string) => void;
@@ -72,55 +71,63 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
     try {
       // Handle Enterprise/Custom plan
       if (planId === 'custom') {
-        // For custom/enterprise plans, redirect to contact sales or handle differently
         window.open('mailto:sales@buzzugc.com?subject=Enterprise Plan Inquiry', '_blank');
         setIsProcessing(false);
         return;
       }
 
-      // Get Stripe price information
-      const priceInfo = getPriceByPlanId(planId);
-      if (!priceInfo) {
-        console.error('Price information not found for plan:', planId);
-        setIsProcessing(false);
-        return;
+      // Get Stripe instance - CLIENT-ONLY APPROACH!
+      const { loadStripe } = await import('@stripe/stripe-js');
+      const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+
+      if (!stripe) {
+        throw new Error('Stripe failed to load. Please check your connection and try again.');
       }
 
-      // Create checkout session
-      const sessionData = {
-        planId: planId,
-        priceId: priceInfo.priceId,
-        successUrl: `${window.location.origin}?success=true&plan=${planId}`,
-        cancelUrl: `${window.location.origin}?canceled=true`,
+      // Direct price IDs - YOUR ACTUAL STRIPE PRICE IDS
+      const priceIds = {
+        starter: 'price_1S7FVWCyEFxXrv4D5I2muWZ4',
+        professional: 'price_1S7FX0CyEFxXrv4DtPmuax2n'
       };
 
-      const session = await createCheckoutSession(sessionData);
-      
-      if (!session) {
-        console.error('Failed to create checkout session');
-        alert('Unable to start checkout. Please ensure the server is running (npm run server) and try again.');
-        setIsProcessing(false);
-        return;
+      const priceId = priceIds[planId as keyof typeof priceIds];
+      if (!priceId) {
+        throw new Error('Invalid plan selected');
       }
 
-      // Redirect to Stripe Checkout
-      const { error } = await redirectToCheckout(session.sessionId);
-      
+      console.log(`🚀 Redirecting to Stripe checkout for ${planId} plan (${priceId})`);
+
+      // DIRECT REDIRECT TO STRIPE CHECKOUT - NO BACKEND NEEDED!
+      const { error } = await stripe.redirectToCheckout({
+        lineItems: [{ 
+          price: priceId, 
+          quantity: 1 
+        }],
+        mode: 'subscription',
+        successUrl: `${window.location.origin}?success=true&plan=${planId}&session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${window.location.origin}?canceled=true&plan=${planId}`,
+        allowPromotionCodes: true,
+        billingAddressCollection: 'required',
+      });
+
       if (error) {
-        console.error('Stripe checkout error:', error);
+        console.error('❌ Stripe checkout error:', error);
+        alert(`Payment failed: ${error.message || 'Unknown error'}. Please try again.`);
         setIsProcessing(false);
         return;
       }
 
       // If we reach here, the redirect should have happened
-      // If not, something went wrong
+      // This line should not execute if redirect was successful
+      console.log('⚠️ Redirect may have failed - user is still on page');
+      setIsProcessing(false);
+
+    } catch (error) {
+      console.error('❌ Error processing payment:', error);
       setIsProcessing(false);
       
-    } catch (error) {
-      console.error('Error processing payment:', error);
-      setIsProcessing(false);
-      // Show error to user
-      alert('Unable to process payment. Please check your connection and try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Unable to process payment: ${errorMessage}`);
     }
   };
 
@@ -221,7 +228,7 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
                   {isProcessing && selectedPlan === plan.id ? (
                     <div className="flex items-center justify-center">
                       <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin mr-2"></div>
-                      Processing...
+                      Redirecting to Stripe...
                     </div>
                   ) : (
                     plan.buttonText
