@@ -154,7 +154,7 @@ const CreationHub: React.FC = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-900">Your Creations</h1>
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600">6 / 1500</span>
+            <span className="text-sm text-gray-600">6 videos created</span>
             <button
               onClick={() => setShowAvatarPopup(true)}
               className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors"

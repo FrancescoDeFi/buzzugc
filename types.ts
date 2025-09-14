@@ -1,6 +1,9 @@
 
 export interface User {
   username: string;
+  plan?: string;
+  creationsUsed?: number;
+  creationsLimit?: number;
 }
 
 export interface Avatar {
