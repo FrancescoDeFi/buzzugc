@@ -125,14 +125,15 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      {/* Main Content (scaled down) */}
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="transform origin-top scale-90 md:scale-95">
         {/* Header Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+        <div className="text-center mb-12">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Choose Your Plan
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Start creating professional AI videos today. Pick the plan that fits your needs and scale as you grow.
           </p>
         </div>
@@ -140,7 +141,7 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
         {/* Debug info removed */}
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {plans.map((plan) => (
             <div
               key={plan.id}
@@ -158,30 +159,30 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
                 </div>
               )}
 
-              <div className="p-8">
+              <div className="p-6">
                 {/* Plan Header */}
                 <div className="text-center mb-8">
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
                   <div className="mb-4">
                     {plan.price ? (
                       <div className="flex items-center justify-center">
-                        <span className="text-5xl font-bold text-gray-900">${plan.price}</span>
-                        <span className="text-gray-600 ml-2">/month</span>
+                        <span className="text-4xl font-bold text-gray-900">${plan.price}</span>
+                        <span className="text-gray-600 ml-1">/month</span>
                       </div>
                     ) : (
                       <div className="text-3xl font-bold text-gray-900">Custom</div>
                     )}
                   </div>
-                  <div className="text-gray-600">
+                  <div className="text-gray-600 text-sm">
                     <span className="font-semibold">{plan.creations}</span> video creations
                   </div>
                 </div>
 
                 {/* Features List */}
-                <ul className="space-y-4 mb-8">
+                <ul className="space-y-3 mb-6 text-sm">
                   {plan.features.map((feature, index) => (
                     <li key={index} className="flex items-start">
-                      <svg className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                       <span className="text-gray-700">{feature}</span>
@@ -193,7 +194,7 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
                 <button
                   onClick={() => handleSelectPlan(plan.id)}
                   disabled={isProcessing && selectedPlan === plan.id}
-                  className={`w-full py-4 px-6 rounded-xl font-medium transition-all transform hover:scale-105 disabled:scale-100 disabled:opacity-50 ${
+                  className={`w-full py-3 px-5 rounded-xl text-sm font-medium transition-all transform hover:scale-105 disabled:scale-100 disabled:opacity-50 ${
                     plan.popular
                       ? 'bg-black text-white hover:bg-gray-800 shadow-lg'
                       : 'bg-gray-100 text-gray-900 hover:bg-gray-200 border border-gray-200'
@@ -201,7 +202,7 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
                 >
                   {isProcessing && selectedPlan === plan.id ? (
                     <div className="flex items-center justify-center">
-                      <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin mr-2"></div>
+                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin mr-2"></div>
                       Redirecting to Stripe...
                     </div>
                   ) : (
@@ -214,38 +215,38 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
         </div>
 
         {/* Bottom Features */}
-        <div className="mt-16 text-center">
-          <p className="text-gray-600 mb-8">All plans include:</p>
+        <div className="mt-12 text-center">
+          <p className="text-gray-600 mb-6 text-sm">All plans include:</p>
           <div className="flex flex-wrap justify-center items-center gap-8 text-sm text-gray-500">
             <div className="flex items-center">
-              <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               Commercial usage rights
             </div>
             <div className="flex items-center">
-              <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               Cancel anytime
             </div>
             <div className="flex items-center">
-              <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               24/7 support
             </div>
             <div className="flex items-center">
-              <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
               7-day free trial
             </div>
           </div>
         </div>
-
+        
         {/* FAQ Section */}
-        <div className="mt-20">
+        <div className="mt-16">
           <h3 className="text-2xl font-bold text-center text-gray-900 mb-8">Frequently Asked Questions</h3>
           <div className="max-w-3xl mx-auto space-y-6">
             <div className="bg-gray-50 rounded-xl p-6">
@@ -261,6 +262,8 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
               <p className="text-gray-600">Yes, we offer a 30-day money-back guarantee if you're not satisfied with our service.</p>
             </div>
           </div>
+        </div>
+        </div>
         </div>
       </div>
     </div>
