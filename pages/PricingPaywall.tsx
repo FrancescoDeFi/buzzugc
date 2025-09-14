@@ -98,6 +98,7 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
       
       if (!session) {
         console.error('Failed to create checkout session');
+        alert('Unable to start checkout. Please ensure the server is running (npm run server) and try again.');
         setIsProcessing(false);
         return;
       }
@@ -118,12 +119,8 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
     } catch (error) {
       console.error('Error processing payment:', error);
       setIsProcessing(false);
-      
-      // For now, fallback to the original behavior for testing
-      // Remove this in production once Stripe backend is set up
-      console.log('Falling back to original flow for testing');
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      onSelectPlan(planId);
+      // Show error to user
+      alert('Unable to process payment. Please check your connection and try again.');
     }
   };
 
