@@ -220,7 +220,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
                     {[
                       { name: 'Aaron',   src: '/images/Aaron.jpeg' },
                       { name: 'Chloe',   src: '/images/Chloe.jpeg' },
-                      { name: 'Chris',   src: '/images/Chris.jpeg' },
+                      { name: 'Ryan',    src: '/images/Ryan.jpeg' },
                       { name: 'Devin',   src: '/images/Devin.jpeg' },
                       { name: 'Elena',   src: '/images/Elena.jpeg' },
                       { name: 'Ethan',   src: '/images/Ethan.jpeg' },
