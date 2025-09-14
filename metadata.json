@@ -1,0 +1,5 @@
+{
+  "name": "AI UGC Video Creator",
+  "description": "A web application to create hyperrealistic AI User-Generated Content (UGC) videos. Users can select a pre-made avatar, provide a script, and generate a video of the avatar speaking the text using advanced AI models.",
+  "requestFramePermissions": []
+}
