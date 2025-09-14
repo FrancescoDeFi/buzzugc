@@ -2,8 +2,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import LoginPage from './pages/LoginPage';
 import CreationHub from './pages/CreationHub';
-import HomePage from './pages/HomePage';
 import PricingPaywall from './pages/PricingPaywall';
+import Homepage from './pages/homepage';
 import Header from './components/Header';
 import type { User } from './types';
 import { supabase } from './services/supabaseClient';
@@ -16,11 +16,22 @@ const App: React.FC = () => {
 
   // Hydrate from Supabase session and listen for auth changes
   useEffect(() => {
+    // Decide which app mode based on hostname: marketing site for root, app on app.* subdomain
+    const isAppSubdomain = typeof window !== 'undefined' && /(^|\.)app\./.test(window.location.host);
+    if (!isAppSubdomain) {
+      setShowHomePage(true);
+    } else {
+      setShowHomePage(false);
+    }
+
     const init = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         setUser({ username: session.user.email ?? 'user' });
-        setShowHomePage(false);
+        // Only navigate to app flow if on app subdomain
+        if (typeof window !== 'undefined' && /(^|\.)app\./.test(window.location.host)) {
+          setShowHomePage(false);
+        }
         setShowPricingPaywall(true);
       }
     };
@@ -29,11 +40,15 @@ const App: React.FC = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setUser({ username: session.user.email ?? 'user' });
-        setShowHomePage(false);
+        if (typeof window !== 'undefined' && /(^|\.)app\./.test(window.location.host)) {
+          setShowHomePage(false);
+        }
         setShowPricingPaywall(true);
       } else {
         setUser(null);
-        setShowHomePage(true);
+        if (!(typeof window !== 'undefined' && /(^|\.)app\./.test(window.location.host))) {
+          setShowHomePage(true);
+        }
         setShowPricingPaywall(false);
         setSelectedPlan(null);
       }
@@ -60,7 +75,9 @@ const App: React.FC = () => {
   }, []);
 
   const handleNavigateToLogin = useCallback(() => {
-    setShowHomePage(false);
+    if (typeof window !== 'undefined') {
+      window.location.href = 'https://app.buzzugc.ai';
+    }
   }, []);
 
   const handleSelectPlan = useCallback((planId: string) => {
@@ -72,8 +89,8 @@ const App: React.FC = () => {
     setShowPricingPaywall(false);
   }, []);
 
-  if (showHomePage && !user) {
-    return <HomePage onNavigateToLogin={handleNavigateToLogin} />;
+  if (showHomePage) {
+    return <Homepage />;
   }
 
   if (showPricingPaywall && user && !selectedPlan) {
