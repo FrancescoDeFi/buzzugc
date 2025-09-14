@@ -319,9 +319,11 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
               <p className="text-xl text-gray-600 mb-8">
                 Customize your videos with advanced features and maintain consistency across all your content.
               </p>
-              <p className="text-lg text-gray-800">
-                Instant UGC in 2 minutes. Replace talent with 300+ licensed AI creators. Add your AI avatar and show up everywhere, 24/7
-              </p>
+              <ul className="list-disc pl-6 space-y-3 text-gray-800 text-lg">
+                <li>Instant UGC in 2 minutes</li>
+                <li>Replace talent with 300+ licensed AI creators</li>
+                <li>Add your AI avatar and show up everywhere, 24/7</li>
+              </ul>
             </div>
             <div className="bg-gray-100 rounded-2xl p-8">
               <div className="aspect-video bg-white rounded-lg flex items-center justify-center">
