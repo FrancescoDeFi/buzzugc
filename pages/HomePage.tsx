@@ -381,7 +381,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
               return (
                 <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
                   <button
-                    className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                    className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors focus:outline-none focus-visible:outline-none focus:ring-0 focus:ring-offset-0"
                     onClick={() => setExpandedFaq(open ? null : index)}
                     aria-expanded={open}
                   >
