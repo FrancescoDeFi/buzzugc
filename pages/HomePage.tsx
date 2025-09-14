@@ -463,6 +463,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
           </div>
           <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
             <p>© 2024 BuzzUGC. All rights reserved.</p>
+            <p>Vienna, Austria</p>
           </div>
         </div>
       </footer>
