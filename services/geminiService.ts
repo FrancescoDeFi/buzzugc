@@ -58,7 +58,6 @@ export async function generateUgcVideo(avatarImageUrl: string, script: string): 
             input: {
                 prompt: fullPrompt,
                 image_url: avatarImageUrl,
-                aspect_ratio: "9:16",
                 duration: "8s",
                 generate_audio: true,
                 resolution: "720p"
