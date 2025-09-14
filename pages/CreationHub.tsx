@@ -241,8 +241,8 @@ const CreationHub: React.FC = () => {
       </div>
 
       {/* Floating Bottom Input Section */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-gray-200 shadow-2xl z-40">
-        <div className="max-w-4xl mx-auto px-6 py-6">
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
+        <div className="w-[min(92vw,56rem)] bg-white/95 backdrop-blur-xl border border-gray-200 shadow-2xl rounded-2xl px-6 py-6">
           {/* Talking Actors Dropdown */}
           <div className="mb-4">
             <button
