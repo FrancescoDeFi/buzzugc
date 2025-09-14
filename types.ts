@@ -4,6 +4,9 @@ export interface User {
   plan?: string;
   creationsUsed?: number;
   creationsLimit?: number;
+  subscriptionStatus?: 'active' | 'inactive' | 'canceled' | 'past_due';
+  subscriptionId?: string;
+  customerId?: string;
 }
 
 export interface Avatar {

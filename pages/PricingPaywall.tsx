@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createCheckoutSession, redirectToCheckout, getPriceByPlanId } from '../services/stripeService';
 
 interface PricingPaywallProps {
   onSelectPlan: (planId: string) => void;
@@ -68,11 +69,62 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
     setSelectedPlan(planId);
     setIsProcessing(true);
 
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      // Handle Enterprise/Custom plan
+      if (planId === 'custom') {
+        // For custom/enterprise plans, redirect to contact sales or handle differently
+        window.open('mailto:sales@buzzugc.com?subject=Enterprise Plan Inquiry', '_blank');
+        setIsProcessing(false);
+        return;
+      }
 
-    setIsProcessing(false);
-    onSelectPlan(planId);
+      // Get Stripe price information
+      const priceInfo = getPriceByPlanId(planId);
+      if (!priceInfo) {
+        console.error('Price information not found for plan:', planId);
+        setIsProcessing(false);
+        return;
+      }
+
+      // Create checkout session
+      const sessionData = {
+        planId: planId,
+        priceId: priceInfo.priceId,
+        successUrl: `${window.location.origin}?success=true&plan=${planId}`,
+        cancelUrl: `${window.location.origin}?canceled=true`,
+      };
+
+      const session = await createCheckoutSession(sessionData);
+      
+      if (!session) {
+        console.error('Failed to create checkout session');
+        setIsProcessing(false);
+        return;
+      }
+
+      // Redirect to Stripe Checkout
+      const { error } = await redirectToCheckout(session.sessionId);
+      
+      if (error) {
+        console.error('Stripe checkout error:', error);
+        setIsProcessing(false);
+        return;
+      }
+
+      // If we reach here, the redirect should have happened
+      // If not, something went wrong
+      setIsProcessing(false);
+      
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      setIsProcessing(false);
+      
+      // For now, fallback to the original behavior for testing
+      // Remove this in production once Stripe backend is set up
+      console.log('Falling back to original flow for testing');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      onSelectPlan(planId);
+    }
   };
 
   return (

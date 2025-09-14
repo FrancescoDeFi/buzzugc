@@ -18,6 +18,15 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     setError(null);
     setLoading(true);
     try {
+      // Check if Supabase is configured
+      if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+        // Fallback for demo mode when Supabase is not configured
+        console.warn('Supabase not configured, using demo mode');
+        onLogin(email);
+        setLoading(false);
+        return;
+      }
+
       if (isSignUp) {
         const { error: signUpError } = await supabase.auth.signUp({
           email,
@@ -44,6 +53,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const handleGoogle = async () => {
     setError(null);
     try {
+      // Check if Supabase is configured
+      if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+        // Fallback for demo mode when Supabase is not configured
+        console.warn('Supabase not configured, using demo mode');
+        onLogin('demo@buzzugc.com');
+        return;
+      }
+
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo: window.location.origin },
