@@ -319,24 +319,9 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
               <p className="text-xl text-gray-600 mb-8">
                 Customize your videos with advanced features and maintain consistency across all your content.
               </p>
-              <ul className="space-y-4">
-                <li className="flex items-start">
-                  <span className="text-green-500 mr-3">✓</span>
-                  <span>Consistent brand voice and messaging</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-500 mr-3">✓</span>
-                  <span>A/B test different scripts and avatars</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-500 mr-3">✓</span>
-                  <span>Scale content production instantly</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-green-500 mr-3">✓</span>
-                  <span>No camera, no studio, no crew needed</span>
-                </li>
-              </ul>
+              <p className="text-lg text-gray-800">
+                Instant UGC in 2 minutes. Replace talent with 300+ licensed AI creators. Add your AI avatar and show up everywhere, 24/7
+              </p>
             </div>
             <div className="bg-gray-100 rounded-2xl p-8">
               <div className="aspect-video bg-white rounded-lg flex items-center justify-center">
