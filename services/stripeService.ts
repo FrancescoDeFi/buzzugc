@@ -10,6 +10,13 @@ const getStripe = () => {
       console.error('Stripe publishable key is not configured');
       return Promise.resolve(null);
     }
+    if (!publishableKey.startsWith('pk_')) {
+      console.error('Invalid Stripe publishable key format. Expected key to start with "pk_" but got:', publishableKey.substring(0, 12) + '...');
+      if (import.meta.env.DEV) {
+        alert('Invalid Stripe publishable key. Please set VITE_STRIPE_PUBLISHABLE_KEY to your actual pk_test_ or pk_live_ key.');
+      }
+      return Promise.resolve(null);
+    }
     stripePromise = loadStripe(publishableKey);
   }
   return stripePromise;
