@@ -217,60 +217,27 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
                 <div className="bg-white rounded-2xl p-6">
                   <h3 className="text-gray-900 font-semibold mb-4">Select the actors you'd like to have for your ad</h3>
                   <div className="grid grid-cols-5 gap-3">
-                    {/* Row 1 */}
-                    <div className="aspect-square bg-gradient-to-br from-orange-400 to-pink-500 rounded-lg overflow-hidden relative">
-                      <div className="absolute bottom-1 left-1 right-1">
-                        <div className="bg-black/80 text-white text-xs px-1 py-0.5 rounded text-center font-medium">Gabriella</div>
+                    {[
+                      { name: 'Aaron',   src: '/images/Aaron.jpeg' },
+                      { name: 'Chloe',   src: '/images/Chloe.jpeg' },
+                      { name: 'Chris',   src: '/images/Chris.jpeg' },
+                      { name: 'Devin',   src: '/images/Devin.jpeg' },
+                      { name: 'Elena',   src: '/images/Elena.jpeg' },
+                      { name: 'Ethan',   src: '/images/Ethan.jpeg' },
+                      { name: 'Grace',   src: '/images/Grace.jpeg' },
+                      { name: 'Luca',    src: '/images/Luca.jpeg' },
+                      { name: 'Max',     src: '/images/Max.jpeg' },
+                      { name: 'Sofia',   src: '/images/Sofia.jpeg' },
+                    ].map((actor) => (
+                      <div key={actor.name} className="aspect-square rounded-lg overflow-hidden relative bg-gray-100">
+                        <img src={actor.src} alt={actor.name} className="w-full h-full object-cover" />
+                        <div className="absolute bottom-1 left-1 right-1">
+                          <div className="bg-black/80 text-white text-xs px-1 py-0.5 rounded text-center font-medium">
+                            {actor.name}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="aspect-square bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg overflow-hidden relative flex items-center justify-center">
-                      <span className="text-white text-2xl">👤</span>
-                      <div className="absolute bottom-1 left-1 right-1">
-                        <div className="bg-black/80 text-white text-xs px-1 py-0.5 rounded text-center font-medium">Charlotte</div>
-                      </div>
-                    </div>
-                    <div className="aspect-square bg-gradient-to-br from-green-400 to-teal-500 rounded-lg overflow-hidden relative">
-                      <div className="absolute bottom-1 left-1 right-1">
-                        <div className="bg-black/80 text-white text-xs px-1 py-0.5 rounded text-center font-medium">Sophia</div>
-                      </div>
-                    </div>
-                    <div className="aspect-square bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg overflow-hidden relative">
-                      <div className="absolute bottom-1 left-1 right-1">
-                        <div className="bg-black/80 text-white text-xs px-1 py-0.5 rounded text-center font-medium">Charlotte</div>
-                      </div>
-                    </div>
-                    <div className="aspect-square bg-gradient-to-br from-pink-500 to-red-500 rounded-lg overflow-hidden relative">
-                      <div className="absolute bottom-1 left-1 right-1">
-                        <div className="bg-black/80 text-white text-xs px-1 py-0.5 rounded text-center font-medium">Amy</div>
-                      </div>
-                    </div>
-
-                    {/* Row 2 */}
-                    <div className="aspect-square bg-gradient-to-br from-gray-400 to-gray-600 rounded-lg overflow-hidden relative">
-                      <div className="absolute bottom-1 left-1 right-1">
-                        <div className="bg-black/80 text-white text-xs px-1 py-0.5 rounded text-center font-medium">Marcus</div>
-                      </div>
-                    </div>
-                    <div className="aspect-square bg-gradient-to-br from-teal-400 to-green-500 rounded-lg overflow-hidden relative">
-                      <div className="absolute bottom-1 left-1 right-1">
-                        <div className="bg-black/80 text-white text-xs px-1 py-0.5 rounded text-center font-medium">Alex</div>
-                      </div>
-                    </div>
-                    <div className="aspect-square bg-gradient-to-br from-orange-500 to-red-500 rounded-lg overflow-hidden relative">
-                      <div className="absolute bottom-1 left-1 right-1">
-                        <div className="bg-black/80 text-white text-xs px-1 py-0.5 rounded text-center font-medium">David</div>
-                      </div>
-                    </div>
-                    <div className="aspect-square bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg overflow-hidden relative">
-                      <div className="absolute bottom-1 left-1 right-1">
-                        <div className="bg-black/80 text-white text-xs px-1 py-0.5 rounded text-center font-medium">Luna</div>
-                      </div>
-                    </div>
-                    <div className="aspect-square bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg overflow-hidden relative">
-                      <div className="absolute bottom-1 left-1 right-1">
-                        <div className="bg-black/80 text-white text-xs px-1 py-0.5 rounded text-center font-medium">Emma</div>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
