@@ -137,17 +137,7 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
           </p>
         </div>
 
-        {/* Debug Info */}
-        <div className="text-center mb-8 p-4 bg-gray-100 rounded-lg">
-          <p className="text-sm text-gray-600">
-            🔧 Debug: Stripe Key Status: {import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ? '✅ Loaded' : '❌ Missing'}
-          </p>
-          {import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY && (
-            <p className="text-xs text-gray-500 mt-1">
-              Key: {import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY.substring(0, 20)}...
-            </p>
-          )}
-        </div>
+        {/* Debug info removed */}
 
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
