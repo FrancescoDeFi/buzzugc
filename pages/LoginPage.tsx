@@ -31,7 +31,12 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: window.location.origin },
+          options: {
+            emailRedirectTo: window.location.origin,
+            data: {
+              app_url: window.location.origin
+            }
+          },
         });
         if (signUpError) throw signUpError;
         onLogin(email);
@@ -61,12 +66,30 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         return;
       }
 
-      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+      // Get the correct redirect URL
+      const redirectTo = window.location.origin;
+      console.log('Google OAuth redirect URL:', redirectTo);
+
+      const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: window.location.origin },
+        options: {
+          redirectTo: redirectTo,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          }
+        },
       });
-      if (oauthError) throw oauthError;
+
+      if (oauthError) {
+        console.error('OAuth error:', oauthError);
+        throw oauthError;
+      }
+
+      // The OAuth flow will redirect, so we don't need to do anything else here
+      console.log('OAuth initiated, redirecting to Google...');
     } catch (err) {
+      console.error('Google sign-in error:', err);
       setError(err instanceof Error ? err.message : 'Google sign-in failed');
     }
   };
