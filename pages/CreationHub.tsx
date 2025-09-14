@@ -452,10 +452,7 @@ const CreationHub: React.FC = () => {
                         <div className="absolute bottom-3 left-3 right-3">
                           <div className="bg-white/95 backdrop-blur-sm text-gray-900 px-3 py-2 rounded-lg">
                             <div className="font-bold text-center">{avatar.name}</div>
-                            <div className="flex items-center justify-center space-x-2 mt-1">
-                              {avatar.isPro && <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full font-medium">PRO</span>}
-                              {avatar.isHD && <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">HD</span>}
-                            </div>
+                            {/* Badges removed per request (PRO/HD) */}
                           </div>
                         </div>
                       </div>
