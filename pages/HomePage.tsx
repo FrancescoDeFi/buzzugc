@@ -376,24 +376,42 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-12">Have questions?</h2>
           <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
-                <button
-                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
-                  onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-                >
-                  <span className="font-medium">{faq.question}</span>
-                  <span className="text-2xl text-gray-400">
-                    {expandedFaq === index ? '−' : '+'}
-                  </span>
-                </button>
-                {expandedFaq === index && (
-                  <div className="px-6 pb-4">
-                    <p className="text-gray-600">{faq.answer}</p>
+            {faqs.map((faq, index) => {
+              const open = expandedFaq === index;
+              return (
+                <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
+                  <button
+                    className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                    onClick={() => setExpandedFaq(open ? null : index)}
+                    aria-expanded={open}
+                  >
+                    <span className="font-medium">{faq.question}</span>
+                    <svg
+                      className={`w-5 h-5 text-gray-400 transform transition-transform duration-300 ${open ? 'rotate-180' : 'rotate-0'}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {/* Smoothly collapsing/expanding content */}
+                  <div className="px-6">
+                    <div
+                      className="grid transition-all duration-300 ease-in-out"
+                      style={{ gridTemplateRows: open ? '1fr' : '0fr' }}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="pb-4">
+                          <p className="text-gray-600">{faq.answer}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                )}
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
