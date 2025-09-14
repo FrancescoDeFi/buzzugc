@@ -188,36 +188,54 @@ const CreationHub: React.FC = () => {
             <div className="text-center py-20 text-gray-600">
               <p className="text-lg">No creations yet.</p>
               <p>Start generating now — select an AI Actor and write a script.</p>
+              <div className="mt-6">
+                <button
+                  onClick={() => setShowAvatarPopup(true)}
+                  className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors"
+                >
+                  New Project
+                </button>
+              </div>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
-              {videoCreations.map((video) => (
-                <div key={video.id} className="group cursor-pointer">
-                  <div className="relative aspect-[9/16] bg-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
-                    <img
-                      src={video.thumbnail}
-                      alt={video.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
-                        <div className="w-0 h-0 border-l-6 border-l-gray-800 border-y-4 border-y-transparent ml-1"></div>
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
+                {videoCreations.map((video) => (
+                  <div key={video.id} className="group cursor-pointer">
+                    <div className="relative aspect-[9/16] bg-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
+                      <img
+                        src={video.thumbnail}
+                        alt={video.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
+                          <div className="w-0 h-0 border-l-6 border-l-gray-800 border-y-4 border-y-transparent ml-1"></div>
+                        </div>
                       </div>
+                      {video.duration && (
+                        <div className="absolute bottom-3 right-3 bg-black/80 text-white text-xs px-2 py-1 rounded-lg backdrop-blur-sm">
+                          {video.duration}
+                        </div>
+                      )}
                     </div>
-                    {video.duration && (
-                      <div className="absolute bottom-3 right-3 bg-black/80 text-white text-xs px-2 py-1 rounded-lg backdrop-blur-sm">
-                        {video.duration}
-                      </div>
-                    )}
+                    <div className="mt-3">
+                      <p className="font-semibold text-gray-900 truncate">{video.title}</p>
+                      <p className="text-sm text-gray-600">{video.avatar} • {video.createdAt}</p>
+                    </div>
                   </div>
-                  <div className="mt-3">
-                    <p className="font-semibold text-gray-900 truncate">{video.title}</p>
-                    <p className="text-sm text-gray-600">{video.avatar} • {video.createdAt}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+              <div className="mt-8 flex justify-center">
+                <button
+                  onClick={() => setShowAvatarPopup(true)}
+                  className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors"
+                >
+                  New Project
+                </button>
+              </div>
+            </>
           )}
         </div>
       </div>
