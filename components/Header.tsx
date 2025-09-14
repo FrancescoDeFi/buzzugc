@@ -19,13 +19,7 @@ const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
             <span className="ml-3 text-xl font-semibold text-gray-900">buzzUGC</span>
           </div>
 
-          {/* Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <a href="#" className="text-gray-700 hover:text-black transition-colors font-medium">Dashboard</a>
-            <a href="#" className="text-gray-700 hover:text-black transition-colors font-medium">Projects</a>
-            <a href="#" className="text-gray-700 hover:text-black transition-colors font-medium">Analytics</a>
-            <a href="#" className="text-gray-700 hover:text-black transition-colors font-medium">Settings</a>
-          </div>
+          {/* Navigation removed per request */}
 
           {/* User Menu */}
           <div className="flex items-center space-x-4">
