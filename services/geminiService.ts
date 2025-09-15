@@ -1,11 +1,4 @@
-import { fal } from "@fal-ai/client";
-
-// Configure Fal.ai with API key for VEO 3 Fast
-console.log("Using Fal.ai VEO 3 Fast for video generation");
-
-fal.config({
-  credentials: "b2a86808-1525-4bf5-a1df-feb4ade540ce:69e32cf8e657f20723cbc5dcdf725eb2"
-});
+// Client-side service: calls server endpoint to generate video securely
 
 /**
  * Converts an image URL to a base64 encoded string.
@@ -41,44 +34,23 @@ async function imageUrlToBase64(url: string): Promise<{ base64: string; mimeType
  */
 export async function generateUgcVideo(avatarImageUrl: string, script: string): Promise<string> {
     try {
-        console.log("Generating UGC video with Fal.ai VEO 3 Fast...");
-        console.log("Avatar:", avatarImageUrl);
-        console.log("Script:", script);
+        console.log("Generating UGC video...");
 
         // Convert avatar image to base64 for the prompt
         const { base64 } = await imageUrlToBase64(avatarImageUrl);
-
-        // Create a detailed prompt for VEO 3 Fast
-        const fullPrompt = `Create a high-quality UGC (User-Generated Content) style video in a 9:16 vertical format. The person in the image should appear as the speaker, looking directly at the camera with natural expressions. The video should feature the person speaking the following text with clear lip-sync and natural gestures: "${script}". The setting should be casual and authentic, like a social media influencer or content creator speaking to their audience. Ensure good lighting and a clean background suitable for social media platforms like TikTok or Instagram.`;
-
-        console.log("Submitting request to Fal.ai VEO 3 Fast...");
-
-        // Submit the video generation request
-        const result = await fal.subscribe("fal-ai/veo3/fast/image-to-video", {
-            input: {
-                prompt: fullPrompt,
-                image_url: avatarImageUrl,
-                duration: "8s",
-                generate_audio: true,
-                resolution: "720p"
-            },
-            logs: true,
-            onQueueUpdate: (update) => {
-                console.log("Queue update:", update);
-                if (update.status === "IN_PROGRESS") {
-                    update.logs?.map((log) => log.message).forEach(console.log);
-                }
-            }
+        const dataUrl = `data:image/jpeg;base64,${base64}`;
+        // Call server endpoint to generate video (hides FAL secret)
+        const resp = await fetch('/api/generate-ugc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageDataUrl: dataUrl, script, avatarImageUrl }),
         });
-
-        console.log("Fal.ai VEO 3 Fast response:", result);
-
-        if (!result.data || !result.data.video) {
-            throw new Error("No video generated in response");
+        if (!resp.ok) {
+          const errText = await resp.text();
+          throw new Error(`Server error: ${resp.status} ${errText}`);
         }
-
-        const videoUrl = result.data.video.url;
-        console.log("Generated video URL:", videoUrl);
+        const { videoUrl } = await resp.json();
+        if (!videoUrl) throw new Error('Missing video URL from server');
 
         // Fetch the video and create a blob URL
         const videoResponse = await fetch(videoUrl);
