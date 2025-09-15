@@ -10,9 +10,11 @@ interface VideoCreation {
   id: string;
   thumbnail: string;
   title: string;
+  script?: string;
   avatar: string;
   createdAt: string;
   duration?: string;
+  videoUrl?: string;
 }
 
 const CreationHub: React.FC = () => {
@@ -57,7 +59,7 @@ const CreationHub: React.FC = () => {
     }
     const { data, error } = await supabase
       .from('creations')
-      .select('id, title, avatar_name, thumbnail_url, duration, created_at')
+      .select('id, title, script, avatar_name, thumbnail_url, video_url, duration, created_at')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
     if (error) {
@@ -69,9 +71,11 @@ const CreationHub: React.FC = () => {
       id: String(c.id),
       thumbnail: c.thumbnail_url,
       title: c.title ?? 'Untitled',
+      script: c.script,
       avatar: c.avatar_name ?? 'Unknown',
       createdAt: formatRelativeTime(c.created_at),
       duration: c.duration ?? undefined,
+      videoUrl: c.video_url,
     }));
     setVideoCreations(mapped);
   }, []);
@@ -113,22 +117,35 @@ const CreationHub: React.FC = () => {
     try {
       const videoUrl = await generateUgcVideo(selectedAvatar.imageUrl, script);
       setGeneratedVideoUrl(videoUrl);
-      // Save creation record for the current user
+      
+      // Save creation record for the current user with video URL
       try {
         const { data: userData } = await supabase.auth.getUser();
         const userId = userData.user?.id;
         if (userId) {
-          await supabase.from('creations').insert({
+          console.log('Saving creation with video URL:', videoUrl);
+          const creationData = {
             user_id: userId,
             title: script.substring(0, 40) + (script.length > 40 ? '…' : ''),
+            script: script,
             avatar_name: selectedAvatar.name,
             thumbnail_url: selectedAvatar.imageUrl,
-            duration: null,
-          });
-          await loadCreations();
+            video_url: videoUrl, // Save the generated video URL
+            duration: 8, // VEO 3 Fast generates 8-second videos
+          };
+          
+          const { data, error } = await supabase.from('creations').insert(creationData);
+          if (error) {
+            console.error('Failed to save creation:', error);
+            // Don't throw error, just log it so user can still see their video
+          } else {
+            console.log('Creation saved successfully:', data);
+            await loadCreations();
+          }
         }
       } catch (saveErr) {
         console.error('Failed to save creation', saveErr);
+        // Don't throw error, just log it so user can still see their video
       }
     } catch (err) {
       console.error(err);
@@ -201,28 +218,69 @@ const CreationHub: React.FC = () => {
             <>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
                 {videoCreations.map((video) => (
-                  <div key={video.id} className="group cursor-pointer">
+                  <div 
+                    key={video.id} 
+                    className="group cursor-pointer"
+                    onClick={() => {
+                      if (video.videoUrl) {
+                        setGeneratedVideoUrl(video.videoUrl);
+                        // Optionally scroll to the generated video section
+                        document.getElementById('generated-video')?.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }}
+                  >
                     <div className="relative aspect-[9/16] bg-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
-                      <img
-                        src={video.thumbnail}
-                        alt={video.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
-                          <div className="w-0 h-0 border-l-6 border-l-gray-800 border-y-4 border-y-transparent ml-1"></div>
-                        </div>
-                      </div>
+                      {video.videoUrl ? (
+                        // Show video thumbnail with play button if video exists
+                        <>
+                          <img
+                            src={video.thumbnail}
+                            alt={video.title}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
+                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
+                              <div className="w-0 h-0 border-l-6 border-l-gray-800 border-y-4 border-y-transparent ml-1"></div>
+                            </div>
+                          </div>
+                          <div className="absolute top-3 left-3 bg-green-500 text-white text-xs px-2 py-1 rounded-lg backdrop-blur-sm">
+                            ✓ Generated
+                          </div>
+                        </>
+                      ) : (
+                        // Show placeholder if no video yet
+                        <>
+                          <img
+                            src={video.thumbnail}
+                            alt={video.title}
+                            className="w-full h-full object-cover opacity-50"
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="text-center">
+                              <div className="w-12 h-12 bg-gray-400 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <span className="text-white text-sm">⏳</span>
+                              </div>
+                              <p className="text-xs text-gray-600">Processing...</p>
+                            </div>
+                          </div>
+                          <div className="absolute top-3 left-3 bg-yellow-500 text-white text-xs px-2 py-1 rounded-lg backdrop-blur-sm">
+                            Processing
+                          </div>
+                        </>
+                      )}
                       {video.duration && (
                         <div className="absolute bottom-3 right-3 bg-black/80 text-white text-xs px-2 py-1 rounded-lg backdrop-blur-sm">
-                          {video.duration}
+                          {video.duration}s
                         </div>
                       )}
                     </div>
                     <div className="mt-3">
                       <p className="font-semibold text-gray-900 truncate">{video.title}</p>
                       <p className="text-sm text-gray-600">{video.avatar} • {video.createdAt}</p>
+                      {video.videoUrl && (
+                        <p className="text-xs text-green-600 mt-1">Click to view video</p>
+                      )}
                     </div>
                   </div>
                 ))}

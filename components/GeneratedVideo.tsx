@@ -7,7 +7,7 @@ interface GeneratedVideoProps {
 
 const GeneratedVideo: React.FC<GeneratedVideoProps> = ({ videoUrl, onReset }) => {
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-8">
+    <div id="generated-video" className="min-h-screen bg-white flex items-center justify-center p-8">
       <div className="max-w-2xl mx-auto text-center">
         {/* Success Header */}
         <div className="mb-8">
