@@ -17,7 +17,45 @@ serve(async (req) => {
   }
 
   try {
-    const { imageDataUrl, avatarImageUrl, script }: Json = await req.json();
+    // Robust body parsing: accept JSON, form-encoded, or plain text
+    const contentType = req.headers.get('content-type') ?? '';
+    const raw = await req.text();
+
+    let parsed: Record<string, unknown> = {};
+    if (contentType.includes('application/json')) {
+      try {
+        parsed = JSON.parse(raw);
+      } catch (e) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid JSON body', details: String(e) }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } },
+        );
+      }
+    } else if (contentType.includes('application/x-www-form-urlencoded')) {
+      const params = new URLSearchParams(raw);
+      parsed = Object.fromEntries(params.entries());
+    } else if (contentType.includes('text/plain')) {
+      parsed = { script: raw };
+    } else if (raw?.trim().startsWith('{')) {
+      // Attempt JSON parse even if header missing
+      try {
+        parsed = JSON.parse(raw);
+      } catch (e) {
+        return new Response(
+          JSON.stringify({ error: 'Unrecognized or invalid request body', details: String(e) }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } },
+        );
+      }
+    } else {
+      return new Response(
+        JSON.stringify({ error: 'Unsupported Content-Type', contentType }),
+        { status: 415, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
+
+    const imageDataUrl = (parsed as Json).imageDataUrl as string | undefined;
+    const avatarImageUrl = (parsed as Json).avatarImageUrl as string | undefined;
+    const script = (parsed as Json).script as string | undefined;
 
     const FAL_KEY = Deno.env.get('FAL_KEY') || Deno.env.get('FAL_API_KEY');
     if (!FAL_KEY) {
@@ -43,9 +81,8 @@ serve(async (req) => {
     // Compose prompt
     const prompt = `Create a high-quality UGC (User-Generated Content) style video in a 9:16 vertical format. The person in the image should appear as the speaker, looking directly at the camera with natural expressions. The video should feature the person speaking the following text with clear lip-sync and natural gestures: "${script}". The setting should be casual and authentic, like a social media influencer or content creator speaking to their audience. Ensure good lighting and a clean background suitable for social media platforms like TikTok or Instagram.`;
 
-    // NOTE: Replace the block below with the official Fal.ai HTTP call for your model.
-    // The snippet demonstrates a typical JSON POST; consult Fal docs for the exact URL and payload.
-    const falEndpoint = 'https://api.fal.ai/fal-ai/veo3/fast/image-to-video'; // Example placeholder
+    // Fal.ai synchronous invoke endpoint for the VEO 3 Fast image-to-video model
+    const falEndpoint = 'https://api.fal.ai/fal-ai/veo3/fast/image-to-video';
 
     const falResp = await fetch(falEndpoint, {
       method: 'POST',
@@ -92,4 +129,3 @@ serve(async (req) => {
     });
   }
 });
-
