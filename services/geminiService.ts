@@ -41,23 +41,32 @@ export async function generateUgcVideo(avatarImageUrl: string, script: string): 
         // Convert avatar image to base64 for the prompt
         const { base64 } = await imageUrlToBase64(avatarImageUrl);
         const dataUrl = `data:image/jpeg;base64,${base64}`;
-        // Prefer Supabase Edge Function if configured; fallback to local server API
+        // Prefer Supabase Edge Function. Always include anon key so it works even without a user session.
         let videoUrl: string | undefined;
+        const anonKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY as string | undefined;
+        const supaUrl = (import.meta as any).env?.VITE_SUPABASE_URL as string | undefined;
         try {
           if ((supabase as any)?.functions) {
+            const headers: Record<string, string> = {};
+            if (anonKey) {
+              headers['apikey'] = anonKey;
+              headers['Authorization'] = `Bearer ${anonKey}`;
+            }
             const { data, error } = await (supabase as any).functions.invoke('generate-ugc', {
               body: { imageDataUrl: dataUrl, script, avatarImageUrl },
+              headers,
             });
             if (error) throw error;
             videoUrl = data?.videoUrl;
           }
         } catch (e) {
-          console.warn('Edge Function invoke failed, falling back to local API:', e);
+          console.warn('Edge Function invoke failed, trying direct function URL:', e);
         }
-        if (!videoUrl) {
-          const resp = await fetch('/api/generate-ugc', {
+        if (!videoUrl && supaUrl && anonKey) {
+          // Direct call to the deployed function (works on Vercel where /api is not available)
+          const resp = await fetch(`${supaUrl.replace(/\/$/, '')}/functions/v1/generate-ugc`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${anonKey}`, 'apikey': anonKey },
             body: JSON.stringify({ imageDataUrl: dataUrl, script, avatarImageUrl }),
           });
           if (!resp.ok) {
@@ -67,6 +76,7 @@ export async function generateUgcVideo(avatarImageUrl: string, script: string): 
           const json = await resp.json();
           videoUrl = json.videoUrl;
         }
+        if (!videoUrl) throw new Error('Missing video URL from server');
         if (!videoUrl) throw new Error('Missing video URL from server');
 
         // Fetch the video and create a blob URL
