@@ -74,6 +74,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         provider: 'google',
         options: {
           redirectTo: redirectTo,
+          // PKCE is default; keep it explicit and ensure we handle code exchange on return
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',

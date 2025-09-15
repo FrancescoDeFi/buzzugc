@@ -52,6 +52,11 @@ const App: React.FC = () => {
 
   // Hydrate from Supabase session and listen for auth changes
   useEffect(() => {
+    // Complete OAuth flow if redirected back with a code/token
+    supabase.auth.exchangeCodeForSession(window.location.href).catch(() => {
+      // ignore if no code present
+    });
+
     const init = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
