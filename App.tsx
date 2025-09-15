@@ -32,6 +32,13 @@ const App: React.FC = () => {
     }
   }, []);
 
+  // Unified handler: skip pricing and go to creation hub
+  const handleSkipAndGoHome = useCallback(() => {
+    setShowPricingPaywall(false);
+    setShowHomePage(false);
+    navigate('/');
+  }, [navigate]);
+
   // Check URL parameters for payment success
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -65,6 +72,7 @@ const App: React.FC = () => {
           subscriptionStatus: 'active' as const // This would come from your database in production
         };
         setUser(userData);
+        setShowHomePage(false);
         
         // Don't show pricing paywall if payment was successful
         const urlParams = new URLSearchParams(window.location.search);
@@ -78,6 +86,7 @@ const App: React.FC = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setUser({ username: session.user.email ?? 'user' });
+        setShowHomePage(false);
         setShowPricingPaywall(true);
       } else {
         setUser(null);
@@ -128,7 +137,7 @@ const App: React.FC = () => {
   if (showHomePage) {
     // If route is /pricing, show pricing page directly (public URL)
     if (path === '/pricing') {
-      return <PricingPaywall onSelectPlan={() => {}} onSkip={() => navigate('/')} />;
+      return <PricingPaywall onSelectPlan={() => {}} onSkip={handleSkipAndGoHome} />;
     }
     return <HomePage onNavigateToLogin={handleNavigateToLogin} />;
   }
@@ -144,7 +153,7 @@ const App: React.FC = () => {
   }
 
   if ((showPricingPaywall && user && !selectedPlan) || path === '/pricing') {
-    return <PricingPaywall onSelectPlan={handleSelectPlan} onSkip={() => navigate('/')} />;
+    return <PricingPaywall onSelectPlan={handleSelectPlan} onSkip={handleSkipAndGoHome} />;
   }
 
   return (
