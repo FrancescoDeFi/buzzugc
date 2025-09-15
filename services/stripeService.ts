@@ -44,12 +44,11 @@ export const STRIPE_PRICES: StripePrice[] = [
     currency: 'usd',
     interval: 'month',
     features: [
-      '30 AI video creations per month',
-      'HD quality videos',
-      'Basic AI avatars',
-      'Standard voice options',
-      'Email support',
-      'Basic analytics'
+      '30 video creations per month',
+      '50+ realistic AI creators',
+      'Most realistic results',
+      'Processed in 2 minutes',
+      'Custom AI hooks'
     ]
   },
   {
@@ -61,14 +60,12 @@ export const STRIPE_PRICES: StripePrice[] = [
     currency: 'usd',
     interval: 'month',
     features: [
-      '50 AI video creations per month',
-      'HD & 4K quality videos',
-      'Premium AI avatars',
-      'Advanced voice cloning',
-      'Priority support',
-      'Advanced analytics',
-      'Custom backgrounds',
-      'Bulk creation tools'
+      '50 video creations per month',
+      '50+ realistic AI creators',
+      'Most realistic results',
+      'Processed in 2 minutes',
+      'Custom AI hooks',
+      'Create content in bulk'
     ]
   }
 ];

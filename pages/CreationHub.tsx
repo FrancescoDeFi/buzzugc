@@ -372,13 +372,24 @@ const CreationHub: React.FC = () => {
           <div className="mb-4">
             <textarea
               value={script}
-              onChange={e => setScript(e.target.value)}
+              onChange={e => {
+                const newValue = e.target.value;
+                if (newValue.length <= 100) {
+                  setScript(newValue);
+                }
+              }}
               placeholder="Write your script here... Tell your story, describe your product, or share your message."
               className="w-full h-24 p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-900 placeholder-gray-500 bg-white shadow-sm"
               rows={3}
+              maxLength={100}
             />
             <div className="flex items-center justify-between mt-2">
-              <span className="text-xs text-gray-500">{script.length} / 5000</span>
+              <span className={`text-xs ${script.length >= 100 ? 'text-red-500' : 'text-gray-500'}`}>
+                {script.length} / 100 characters
+                {script.length >= 100 && (
+                  <span className="ml-2 text-red-600 font-medium">Use rest for new video</span>
+                )}
+              </span>
               <div className="flex items-center space-x-2 text-xs text-gray-500">
                 <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                 <span>Ready to generate</span>
