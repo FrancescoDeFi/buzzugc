@@ -14,9 +14,9 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan }) => {
       id: 'starter',
       name: 'Starter',
       price: 49,
-      creations: 5,
+      creations: 30,
       features: [
-        '5 AI video creations per month',
+        '30 AI video creations per month',
         'HD quality videos',
         'Basic AI avatars',
         'Standard voice options',
@@ -30,9 +30,9 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan }) => {
       id: 'professional',
       name: 'Growth',
       price: 69,
-      creations: 10,
+      creations: 50,
       features: [
-        '10 AI video creations per month',
+        '50 AI video creations per month',
         'HD & 4K quality videos',
         'Premium AI avatars',
         'Advanced voice cloning',

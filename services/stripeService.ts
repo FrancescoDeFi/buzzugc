@@ -44,7 +44,7 @@ export const STRIPE_PRICES: StripePrice[] = [
     currency: 'usd',
     interval: 'month',
     features: [
-      '5 AI video creations per month',
+      '30 AI video creations per month',
       'HD quality videos',
       'Basic AI avatars',
       'Standard voice options',
@@ -61,7 +61,7 @@ export const STRIPE_PRICES: StripePrice[] = [
     currency: 'usd',
     interval: 'month',
     features: [
-      '10 AI video creations per month',
+      '50 AI video creations per month',
       'HD & 4K quality videos',
       'Premium AI avatars',
       'Advanced voice cloning',

@@ -5,6 +5,7 @@ import LoadingIndicator from '../components/LoadingIndicator';
 import GeneratedVideo from '../components/GeneratedVideo';
 import { generateUgcVideo } from '../services/geminiService';
 import { supabase } from '../services/supabaseClient';
+import { canGenerateVideo, getUserPlanLimits } from '../services/subscriptionService';
 
 interface VideoCreation {
   id: string;
@@ -34,6 +35,14 @@ const CreationHub: React.FC = () => {
 
   // User creations from Supabase
   const [videoCreations, setVideoCreations] = useState<VideoCreation[]>([]);
+  
+  // Quota tracking
+  const [quotaInfo, setQuotaInfo] = useState<{
+    canGenerate: boolean;
+    usage: number;
+    limit: number;
+    message?: string;
+  }>({ canGenerate: true, usage: 0, limit: 0 });
 
   const formatRelativeTime = (iso: string): string => {
     const now = new Date();
@@ -97,9 +106,19 @@ const CreationHub: React.FC = () => {
     return () => clearInterval(interval);
   }, [isLoading]);
 
+  const loadQuotaInfo = useCallback(async () => {
+    try {
+      const quota = await canGenerateVideo();
+      setQuotaInfo(quota);
+    } catch (error) {
+      console.error('Error loading quota info:', error);
+    }
+  }, []);
+
   useEffect(() => {
     loadCreations();
-  }, [loadCreations]);
+    loadQuotaInfo();
+  }, [loadCreations, loadQuotaInfo]);
 
   const handleSelectAvatar = useCallback((avatar: Avatar) => {
     setSelectedAvatar(avatar);
@@ -109,6 +128,13 @@ const CreationHub: React.FC = () => {
   const handleGenerateVideo = useCallback(async () => {
     if (!selectedAvatar || !script.trim()) {
       setError("Please select an avatar and write a script.");
+      return;
+    }
+
+    // Check quota before generating
+    const quota = await canGenerateVideo();
+    if (!quota.canGenerate) {
+      setError(quota.message || "You have reached your monthly video generation limit. Please upgrade your plan to continue.");
       return;
     }
 
@@ -144,6 +170,7 @@ const CreationHub: React.FC = () => {
           } else {
             console.log('Creation saved successfully:', data);
             await loadCreations();
+            await loadQuotaInfo(); // Refresh quota after successful generation
           }
         }
       } catch (saveErr) {
@@ -156,7 +183,7 @@ const CreationHub: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedAvatar, script, loadCreations]);
+  }, [selectedAvatar, script, loadCreations, loadQuotaInfo]);
 
   const handleReset = useCallback(() => {
     setSelectedAvatar(null);
@@ -190,7 +217,19 @@ const CreationHub: React.FC = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-900">Your Creations</h1>
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600">{videoCreations.length} videos created</span>
+            <div className="text-sm text-gray-600">
+              <span>{videoCreations.length} videos created</span>
+              {quotaInfo.limit > 0 && (
+                <span className="ml-2 px-2 py-1 bg-gray-100 rounded-full">
+                  {quotaInfo.usage}/{quotaInfo.limit} used this month
+                </span>
+              )}
+              {quotaInfo.limit === -1 && (
+                <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 rounded-full">
+                  Unlimited
+                </span>
+              )}
+            </div>
             <button
               onClick={() => setShowAvatarPopup(true)}
               className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors"
@@ -368,20 +407,43 @@ const CreationHub: React.FC = () => {
               </button>
             </div>
 
-            <button
-              onClick={handleGenerateVideo}
-              disabled={!selectedAvatar || !script.trim()}
-              className="bg-black hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-6 py-3 rounded-full font-medium transition-all shadow-lg flex items-center"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
-            </button>
+            <div className="flex flex-col items-end space-y-2">
+              <button
+                onClick={handleGenerateVideo}
+                disabled={!selectedAvatar || !script.trim() || !quotaInfo.canGenerate}
+                className="bg-black hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-6 py-3 rounded-full font-medium transition-all shadow-lg flex items-center"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+                Generate Video
+              </button>
+              
+              {quotaInfo.message && (
+                <div className={`text-xs px-2 py-1 rounded-full ${
+                  quotaInfo.canGenerate 
+                    ? 'bg-green-100 text-green-700' 
+                    : 'bg-red-100 text-red-700'
+                }`}>
+                  {quotaInfo.message}
+                </div>
+              )}
+            </div>
           </div>
 
           {error && (
             <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl">
               <p className="text-sm text-red-600 font-medium">{error}</p>
+              {!quotaInfo.canGenerate && (
+                <div className="mt-2">
+                  <button
+                    onClick={() => window.location.href = '/pricing'}
+                    className="text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg transition-colors"
+                  >
+                    Upgrade Plan
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

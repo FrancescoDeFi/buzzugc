@@ -147,7 +147,7 @@ export const getUserPlanLimits = async () => {
     case 'starter':
       return {
         plan: 'starter',
-        monthlyCreations: 5,
+        monthlyCreations: 30, // Updated from 5 to 30
         hasHDQuality: true,
         hasPremiumAvatars: false,
         hasAdvancedVoices: false,
@@ -160,7 +160,7 @@ export const getUserPlanLimits = async () => {
     case 'professional':
       return {
         plan: 'growth',
-        monthlyCreations: 10,
+        monthlyCreations: 50, // Updated from 10 to 50
         hasHDQuality: true,
         hasPremiumAvatars: true,
         hasAdvancedVoices: true,
@@ -195,6 +195,96 @@ export const getUserPlanLimits = async () => {
         hasCustomBackgrounds: false,
         hasBulkTools: false
       };
+  }
+};
+
+/**
+ * Get user's current monthly video generation count
+ */
+export const getMonthlyUsage = async (userId?: string): Promise<number> => {
+  if (!userId) {
+    const { data: userData } = await supabase.auth.getUser();
+    userId = userData.user?.id;
+  }
+  
+  if (!userId) return 0;
+
+  try {
+    // Get current month's video count
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const { count, error } = await supabase
+      .from('creations')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .gte('created_at', startOfMonth.toISOString());
+
+    if (error) {
+      console.error('Error getting monthly usage:', error);
+      return 0;
+    }
+
+    return count || 0;
+  } catch (error) {
+    console.error('Error calculating monthly usage:', error);
+    return 0;
+  }
+};
+
+/**
+ * Check if user can generate another video (quota check)
+ */
+export const canGenerateVideo = async (): Promise<{ canGenerate: boolean; usage: number; limit: number; message?: string }> => {
+  try {
+    // Super admins have unlimited access
+    if (await isSuperAdmin()) {
+      return {
+        canGenerate: true,
+        usage: 0,
+        limit: -1, // Unlimited
+        message: 'Super Admin - Unlimited Access'
+      };
+    }
+
+    const [planLimits, currentUsage] = await Promise.all([
+      getUserPlanLimits(),
+      getMonthlyUsage()
+    ]);
+
+    const limit = planLimits.monthlyCreations;
+    
+    // Enterprise has unlimited
+    if (limit === -1) {
+      return {
+        canGenerate: true,
+        usage: currentUsage,
+        limit: -1,
+        message: 'Enterprise - Unlimited Access'
+      };
+    }
+
+    // Check if under limit
+    const canGenerate = currentUsage < limit;
+    const remaining = limit - currentUsage;
+
+    return {
+      canGenerate,
+      usage: currentUsage,
+      limit,
+      message: canGenerate 
+        ? `${remaining} video${remaining === 1 ? '' : 's'} remaining this month`
+        : `Monthly limit reached (${currentUsage}/${limit}). Upgrade your plan to generate more videos.`
+    };
+  } catch (error) {
+    console.error('Error checking video generation quota:', error);
+    return {
+      canGenerate: false,
+      usage: 0,
+      limit: 0,
+      message: 'Error checking quota. Please try again.'
+    };
   }
 };
 
