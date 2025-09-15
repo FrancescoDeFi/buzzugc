@@ -1,3 +1,5 @@
+import { supabase } from './supabaseClient';
+
 // Client-side service: calls server endpoint to generate video securely
 
 /**
@@ -72,8 +74,6 @@ export async function generateUgcVideo(avatarImageUrl: string, script: string): 
         if (!videoResponse.ok) {
             throw new Error(`Failed to fetch generated video: ${videoResponse.statusText}`);
         }
-import { supabase } from './supabaseClient';
-
         const videoBlob = await videoResponse.blob();
         const blobUrl = URL.createObjectURL(videoBlob);
 
