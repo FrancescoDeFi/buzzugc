@@ -79,16 +79,9 @@ export async function generateUgcVideo(avatarImageUrl: string, script: string): 
         if (!videoUrl) throw new Error('Missing video URL from server');
         if (!videoUrl) throw new Error('Missing video URL from server');
 
-        // Fetch the video and create a blob URL
-        const videoResponse = await fetch(videoUrl);
-        if (!videoResponse.ok) {
-            throw new Error(`Failed to fetch generated video: ${videoResponse.statusText}`);
-        }
-        const videoBlob = await videoResponse.blob();
-        const blobUrl = URL.createObjectURL(videoBlob);
-
-        console.log("Video generation completed successfully!");
-        return blobUrl;
+        // Return the remote video URL directly to avoid CORS issues when fetching binary data
+        console.log("Video generation completed successfully! URL:", videoUrl);
+        return videoUrl;
 
     } catch (error) {
         console.error("Error in generateUgcVideo:", error);
