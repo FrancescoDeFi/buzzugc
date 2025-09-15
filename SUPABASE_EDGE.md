@@ -27,11 +27,11 @@ Deploy
 What changed in the app
 - Added `supabase/functions/generate-ugc/index.ts` (Deno Edge Function):
   - Accepts `{ imageDataUrl, avatarImageUrl, script }`
-  - Uses server-side `FAL_KEY` to contact Fal.ai
+  - Uses server-side `FAL_KEY` to contact Fal.ai VEO 3 Fast
   - Responds with `{ videoUrl }`
 - Updated `services/geminiService.ts`:
-  - Prefers `supabase.functions.invoke('generate-ugc')`
-  - Falls back to local `/api/generate-ugc` for dev environments
+  - Uses only Supabase edge function for video generation
+  - Removed local API fallback for cleaner architecture
 
 Notes
 - Replace the placeholder `falEndpoint` in the function with the official Fal.ai endpoint for your model and payload structure.
