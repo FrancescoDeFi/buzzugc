@@ -39,17 +39,32 @@ export async function generateUgcVideo(avatarImageUrl: string, script: string): 
         // Convert avatar image to base64 for the prompt
         const { base64 } = await imageUrlToBase64(avatarImageUrl);
         const dataUrl = `data:image/jpeg;base64,${base64}`;
-        // Call server endpoint to generate video (hides FAL secret)
-        const resp = await fetch('/api/generate-ugc', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ imageDataUrl: dataUrl, script, avatarImageUrl }),
-        });
-        if (!resp.ok) {
-          const errText = await resp.text();
-          throw new Error(`Server error: ${resp.status} ${errText}`);
+        // Prefer Supabase Edge Function if configured; fallback to local server API
+        let videoUrl: string | undefined;
+        try {
+          if ((supabase as any)?.functions) {
+            const { data, error } = await (supabase as any).functions.invoke('generate-ugc', {
+              body: { imageDataUrl: dataUrl, script, avatarImageUrl },
+            });
+            if (error) throw error;
+            videoUrl = data?.videoUrl;
+          }
+        } catch (e) {
+          console.warn('Edge Function invoke failed, falling back to local API:', e);
         }
-        const { videoUrl } = await resp.json();
+        if (!videoUrl) {
+          const resp = await fetch('/api/generate-ugc', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ imageDataUrl: dataUrl, script, avatarImageUrl }),
+          });
+          if (!resp.ok) {
+            const errText = await resp.text();
+            throw new Error(`Server error: ${resp.status} ${errText}`);
+          }
+          const json = await resp.json();
+          videoUrl = json.videoUrl;
+        }
         if (!videoUrl) throw new Error('Missing video URL from server');
 
         // Fetch the video and create a blob URL
@@ -57,6 +72,7 @@ export async function generateUgcVideo(avatarImageUrl: string, script: string): 
         if (!videoResponse.ok) {
             throw new Error(`Failed to fetch generated video: ${videoResponse.statusText}`);
         }
+import { supabase } from './supabaseClient';
 
         const videoBlob = await videoResponse.blob();
         const blobUrl = URL.createObjectURL(videoBlob);
