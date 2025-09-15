@@ -32,8 +32,8 @@ const App: React.FC = () => {
     }
   }, []);
 
-  // Unified handler: skip pricing and go to creation hub
-  const handleSkipAndGoHome = useCallback(() => {
+  // Navigation handler
+  const handleGoToCreationHub = useCallback(() => {
     setShowPricingPaywall(false);
     setShowHomePage(false);
     navigate('/');
@@ -125,9 +125,6 @@ const App: React.FC = () => {
     setShowPricingPaywall(false);
   }, []);
 
-  const handleSkipPricing = useCallback(() => {
-    setShowPricingPaywall(false);
-  }, []);
 
   const handlePaymentSuccess = useCallback(() => {
     setShowPaymentSuccess(false);
@@ -137,7 +134,7 @@ const App: React.FC = () => {
   if (showHomePage) {
     // If route is /pricing, show pricing page directly (public URL)
     if (path === '/pricing') {
-      return <PricingPaywall onSelectPlan={() => {}} onSkip={handleSkipAndGoHome} />;
+      return <PricingPaywall onSelectPlan={handleSelectPlan} />;
     }
     return <HomePage onNavigateToLogin={handleNavigateToLogin} />;
   }
@@ -153,7 +150,7 @@ const App: React.FC = () => {
   }
 
   if ((showPricingPaywall && user && !selectedPlan) || path === '/pricing') {
-    return <PricingPaywall onSelectPlan={handleSelectPlan} onSkip={handleSkipAndGoHome} />;
+    return <PricingPaywall onSelectPlan={handleSelectPlan} />;
   }
 
   return (

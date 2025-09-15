@@ -56,8 +56,8 @@ export const STRIPE_PRICES: StripePrice[] = [
     productId: 'prod_T3MFZuYnkHPND9', // Stripe product ID for Growth plan
     priceId: 'price_1S7FX0CyEFxXrv4DtPmuax2n', // Price ID for Growth plan
     planId: 'professional',
-    name: 'Professional',
-    amount: 7900, // $79.00
+    name: 'Growth',
+    amount: 6900, // $69.00
     currency: 'usd',
     interval: 'month',
     features: [

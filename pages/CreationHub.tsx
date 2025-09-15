@@ -57,16 +57,19 @@ const CreationHub: React.FC = () => {
       setVideoCreations([]);
       return;
     }
+    
     const { data, error } = await supabase
       .from('creations')
       .select('id, title, script, avatar_name, thumbnail_url, video_url, duration, created_at')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
+    
     if (error) {
-      console.error('Failed to load creations', error);
+      console.error('Failed to load creations:', error);
       setVideoCreations([]);
       return;
     }
+    
     const mapped: VideoCreation[] = (data ?? []).map((c: any) => ({
       id: String(c.id),
       thumbnail: c.thumbnail_url,
@@ -74,7 +77,7 @@ const CreationHub: React.FC = () => {
       script: c.script,
       avatar: c.avatar_name ?? 'Unknown',
       createdAt: formatRelativeTime(c.created_at),
-      duration: c.duration ?? undefined,
+      duration: c.duration?.toString() ?? '8',
       videoUrl: c.video_url,
     }));
     setVideoCreations(mapped);

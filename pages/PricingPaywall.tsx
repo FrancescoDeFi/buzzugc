@@ -3,10 +3,9 @@ import { checkoutWithPrice } from '../services/stripeService';
 
 interface PricingPaywallProps {
   onSelectPlan: (planId: string) => void;
-  onSkip?: () => void;
 }
 
-const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip }) => {
+const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan }) => {
   const [selectedPlan, setSelectedPlan] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
@@ -29,8 +28,8 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
     },
     {
       id: 'professional',
-      name: 'Professional',
-      price: 79,
+      name: 'Growth',
+      price: 69,
       creations: 10,
       features: [
         '10 AI video creations per month',
@@ -43,7 +42,7 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
         'Bulk creation tools'
       ],
       popular: true,
-      buttonText: 'Go Professional'
+      buttonText: 'Choose Growth'
     },
     {
       id: 'custom',
@@ -107,21 +106,13 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan, onSkip })
     <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="bg-white border-b border-gray-100 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="max-w-7xl mx-auto flex items-center justify-center">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-black rounded-md flex items-center justify-center">
               <span className="text-white font-bold text-lg">B</span>
             </div>
             <span className="ml-3 text-xl font-semibold text-gray-900">buzzUGC</span>
           </div>
-          {onSkip && (
-            <button
-              onClick={onSkip}
-              className="text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              Skip for now
-            </button>
-          )}
         </div>
       </div>
 
