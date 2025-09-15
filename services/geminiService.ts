@@ -41,40 +41,57 @@ export async function generateUgcVideo(avatarImageUrl: string, script: string): 
         // Convert avatar image to base64 for the prompt
         const { base64 } = await imageUrlToBase64(avatarImageUrl);
         const dataUrl = `data:image/jpeg;base64,${base64}`;
-        // Prefer Supabase Edge Function. Always include anon key so it works even without a user session.
+        // Prefer same-origin Vercel API to avoid cross-origin preflight; fallback to Supabase Edge Function
         let videoUrl: string | undefined;
-        const anonKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY as string | undefined;
-        const supaUrl = (import.meta as any).env?.VITE_SUPABASE_URL as string | undefined;
         try {
-          if ((supabase as any)?.functions) {
-            const headers: Record<string, string> = {};
-            if (anonKey) {
-              headers['apikey'] = anonKey;
-              headers['Authorization'] = `Bearer ${anonKey}`;
-            }
-            const { data, error } = await (supabase as any).functions.invoke('generate-ugc', {
-              body: { imageDataUrl: dataUrl, script, avatarImageUrl },
-              headers,
-            });
-            if (error) throw error;
-            videoUrl = data?.videoUrl;
-          }
-        } catch (e) {
-          console.warn('Edge Function invoke failed, trying direct function URL:', e);
-        }
-        if (!videoUrl && supaUrl && anonKey) {
-          // Direct call to the deployed function (works on Vercel where /api is not available)
-          const resp = await fetch(`${supaUrl.replace(/\/$/, '')}/functions/v1/generate-ugc`, {
+          const respLocal = await fetch('/api/generate-ugc', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${anonKey}`, 'apikey': anonKey },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ imageDataUrl: dataUrl, script, avatarImageUrl }),
           });
-          if (!resp.ok) {
-            const errText = await resp.text();
-            throw new Error(`Server error: ${resp.status} ${errText}`);
+          if (respLocal.ok) {
+            const json = await respLocal.json();
+            videoUrl = json.videoUrl;
+          } else {
+            console.warn('Local API generate-ugc failed:', respLocal.status);
           }
-          const json = await resp.json();
-          videoUrl = json.videoUrl;
+        } catch (e) {
+          console.warn('Local API generate-ugc not available, trying Supabase Edge Function');
+        }
+
+        if (!videoUrl) {
+          const anonKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY as string | undefined;
+          const supaUrl = (import.meta as any).env?.VITE_SUPABASE_URL as string | undefined;
+          try {
+            if ((supabase as any)?.functions) {
+              const headers: Record<string, string> = {};
+              if (anonKey) {
+                headers['apikey'] = anonKey;
+                headers['Authorization'] = `Bearer ${anonKey}`;
+              }
+              const { data, error } = await (supabase as any).functions.invoke('generate-ugc', {
+                body: { imageDataUrl: dataUrl, script, avatarImageUrl },
+                headers,
+              });
+              if (error) throw error;
+              videoUrl = data?.videoUrl;
+            }
+          } catch (e) {
+            console.warn('Edge Function invoke failed, trying direct function URL:', e);
+          }
+          if (!videoUrl && supaUrl && anonKey) {
+            const resp = await fetch(`${supaUrl.replace(/\/$/, '')}/functions/v1/generate-ugc`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${anonKey}`, 'apikey': anonKey },
+              body: JSON.stringify({ imageDataUrl: dataUrl, script, avatarImageUrl }),
+            });
+            if (!resp.ok) {
+              const errText = await resp.text();
+              throw new Error(`Server error: ${resp.status} ${errText}`);
+            }
+            const json = await resp.json();
+            videoUrl = json.videoUrl;
+          }
         }
         if (!videoUrl) throw new Error('Missing video URL from server');
         if (!videoUrl) throw new Error('Missing video URL from server');
