@@ -8,6 +8,7 @@ import PaymentSuccess from './components/PaymentSuccess';
 import Header from './components/Header';
 import type { User } from './types';
 import { supabase } from './services/supabaseClient';
+import { isSuperAdmin, getUserSubscription } from './services/subscriptionService';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -17,6 +18,8 @@ const App: React.FC = () => {
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [paymentSessionId, setPaymentSessionId] = useState<string | null>(null);
   const [path, setPath] = useState<string>(window.location.pathname);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [hasSubscription, setHasSubscription] = useState<boolean>(false);
 
   // Simple path-based routing
   useEffect(() => {
@@ -83,16 +86,38 @@ const App: React.FC = () => {
     };
     init();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         setUser({ username: session.user.email ?? 'user' });
         setShowHomePage(false);
-        setShowPricingPaywall(true);
+        
+        // Check if user is super admin or has subscription
+        const [adminStatus, userSubscription] = await Promise.all([
+          isSuperAdmin(),
+          getUserSubscription(session.user.id)
+        ]);
+        
+        setIsAdmin(adminStatus);
+        setHasSubscription(!!userSubscription);
+        
+        // Super admins or users with subscriptions bypass paywall
+        if (adminStatus || userSubscription) {
+          console.log('User has access:', { 
+            isAdmin: adminStatus, 
+            subscription: userSubscription?.plan_name 
+          });
+          setShowPricingPaywall(false);
+          setSelectedPlan(userSubscription?.plan_id || 'enterprise');
+        } else {
+          setShowPricingPaywall(true);
+        }
       } else {
         setUser(null);
         setShowHomePage(true);
         setShowPricingPaywall(false);
         setSelectedPlan(null);
+        setIsAdmin(false);
+        setHasSubscription(false);
       }
     });
 
@@ -149,7 +174,8 @@ const App: React.FC = () => {
     );
   }
 
-  if ((showPricingPaywall && user && !selectedPlan) || path === '/pricing') {
+  // Show paywall only if user doesn't have access (not admin and no subscription)
+  if (showPricingPaywall && user && !selectedPlan && !isAdmin && !hasSubscription) {
     return <PricingPaywall onSelectPlan={handleSelectPlan} />;
   }
 
@@ -158,6 +184,11 @@ const App: React.FC = () => {
       {user ? (
         <>
           <Header user={user} onLogout={handleLogout} />
+          {isAdmin && (
+            <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 text-center text-sm font-medium">
+              🚀 Super Admin Access - All Features Unlocked
+            </div>
+          )}
           <main>
             <CreationHub />
           </main>
