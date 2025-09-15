@@ -99,31 +99,39 @@ serve(async (req) => {
 
     console.log('Generating UGC video with Fal.ai VEO 3 Fast');
     console.log('Script length:', script.length);
-    console.log('Using image:', imageUrl ? 'provided' : 'missing');
+    console.log('Image URL:', imageUrl || 'missing');
+    console.log('Avatar URL:', avatarImageUrl || 'missing');
+    console.log('Data URL provided:', imageDataUrl ? 'yes' : 'no');
 
-    // Create the prompt for VEO 3 Fast
-    const prompt = `Create a high-quality UGC (User-Generated Content) style video in a 9:16 vertical format. The person in the image should appear as the speaker, looking directly at the camera with natural expressions and lip-sync. The person should speak the following text: "${script}". The setting should be casual and authentic, like a social media influencer or content creator speaking to their audience. Ensure good lighting and a clean background suitable for social media platforms like TikTok or Instagram. The person should have natural gestures and body language while speaking.`;
+    // Create the prompt for VEO 3 Fast Image-to-Video
+    // The prompt should describe how to animate the input image
+    const prompt = `The person in the image looks directly at the camera with natural expressions and speaks the following text with clear lip-sync: "${script}". The person should have natural gestures and body language while speaking, like a social media influencer or content creator. The setting should be casual and authentic with good lighting. The person should appear engaged and energetic while delivering the message.`;
 
-    // Prepare the request payload for Fal.ai VEO 3 Fast
+    // Prepare the request payload for Fal.ai VEO 3 Fast Image-to-Video
+    // Parameters should be at root level for the API
     const payload = {
       prompt: prompt,
+      image_url: imageUrl, // This is required for image-to-video
       aspect_ratio: "9:16" as const, // Vertical format for UGC
       duration: "8s" as const,
       resolution: "720p" as const,
       generate_audio: true,
-      enhance_prompt: true,
-      auto_fix: true,
     };
 
-    // Add image_url if we have an image
-    if (imageUrl) {
-      (payload as any).image_url = imageUrl;
+    if (!imageUrl) {
+      console.error('No image URL provided - image-to-video requires an input image');
+      return new Response(JSON.stringify({ error: 'Input image is required for video generation' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
+
+    console.log('Added image_url to payload:', imageUrl.substring(0, 100) + '...');
 
     console.log('Submitting request to Fal.ai...');
 
     // Try the direct API first (fal.subscribe equivalent)
-    const directResponse = await fetch('https://fal.run/fal-ai/veo3/fast', {
+    const directResponse = await fetch('https://fal.run/fal-ai/veo3/fast/image-to-video', {
       method: 'POST',
       headers: {
         'Authorization': `Key ${FAL_KEY}`,
@@ -150,7 +158,7 @@ serve(async (req) => {
     console.log('Direct API failed or no immediate result, trying queue API...');
 
     // If direct API fails or doesn't return immediately, use queue API
-    const queueResponse = await fetch('https://fal.run/fal-ai/veo3/fast', {
+    const queueResponse = await fetch('https://fal.run/fal-ai/veo3/fast/image-to-video', {
       method: 'POST',
       headers: {
         'Authorization': `Key ${FAL_KEY}`,
@@ -186,7 +194,7 @@ serve(async (req) => {
       await new Promise(resolve => setTimeout(resolve, pollIntervalMs));
 
       try {
-        const statusResponse = await fetch(`https://fal.run/fal-ai/veo3/fast/requests/${requestId}/status`, {
+        const statusResponse = await fetch(`https://fal.run/fal-ai/veo3/fast/image-to-video/requests/${requestId}/status`, {
           headers: {
             'Authorization': `Key ${FAL_KEY}`,
           },
@@ -202,7 +210,7 @@ serve(async (req) => {
 
         if (status.status === 'COMPLETED') {
           // Get the final result
-          const resultResponse = await fetch(`https://fal.run/fal-ai/veo3/fast/requests/${requestId}`, {
+          const resultResponse = await fetch(`https://fal.run/fal-ai/veo3/fast/image-to-video/requests/${requestId}`, {
             headers: {
               'Authorization': `Key ${FAL_KEY}`,
             },
