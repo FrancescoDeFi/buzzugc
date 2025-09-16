@@ -83,12 +83,12 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
           <div className="mt-2 rounded-2xl border border-gray-200 bg-white/90 backdrop-blur-sm shadow-sm">
             <div className="flex items-center justify-between h-14 px-3">
               {/* Brand */}
-              <div className="flex items-center space-x-2.5">
+              <a href="/" className="flex items-center space-x-2.5 hover:opacity-90 transition-opacity">
                 <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                   <span className="text-white font-extrabold text-base">B</span>
                 </div>
                 <span className="text-lg font-semibold text-gray-900">buzzUGC</span>
-              </div>
+              </a>
 
               {/* Menu */}
               <div className="hidden md:flex items-center space-x-6 text-gray-900">

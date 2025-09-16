@@ -133,12 +133,12 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       <div className="w-full lg:w-1/3 flex items_center justify_center p-8">
         <div className="w-full max-w-sm">
           {/* Logo */}
-          <div className="flex items-center justify-center mb-8">
+          <a href="/" className="flex items-center justify-center mb-8 hover:opacity-90 transition-opacity">
             <div className="w-8 h-8 bg-black rounded-md flex items-center justify-center">
               <span className="text-white font-bold text-lg">B</span>
             </div>
             <span className="ml-2 text-xl font-semibold text-gray-900">buzzUGC</span>
-          </div>
+          </a>
 
           {/* Form Header */}
           <div className="text-center mb-8">

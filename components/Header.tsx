@@ -11,13 +11,13 @@ const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
     <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center">
+          {/* Logo (clickable to Home) */}
+          <a href="/" className="flex items-center hover:opacity-90 transition-opacity">
             <div className="w-8 h-8 bg-black rounded-md flex items-center justify-center">
               <span className="text-white font-bold text-lg">B</span>
             </div>
             <span className="ml-3 text-xl font-semibold text-gray-900">buzzUGC</span>
-          </div>
+          </a>
 
           {/* Navigation removed per request */}
 
