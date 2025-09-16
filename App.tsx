@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import CreationHub from './pages/CreationHub';
 import HomePage from './pages/HomePage';
 import PricingPaywall from './pages/PricingPaywall';
+import PricingModal from './components/PricingModal';
 import PaymentSuccess from './components/PaymentSuccess';
 import Header from './components/Header';
 import type { User } from './types';
@@ -20,6 +21,7 @@ const App: React.FC = () => {
   const [path, setPath] = useState<string>(window.location.pathname);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [hasSubscription, setHasSubscription] = useState<boolean>(false);
+  const [showPricingModal, setShowPricingModal] = useState<boolean>(false);
 
   // Simple path-based routing
   useEffect(() => {
@@ -77,11 +79,7 @@ const App: React.FC = () => {
         setUser(userData);
         setShowHomePage(false);
         
-        // Don't show pricing paywall if payment was successful
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('success') !== 'true') {
-          setShowPricingPaywall(true);
-        }
+        // Do not auto-open paywall; allow access to creation hub
       }
     };
     init();
@@ -108,8 +106,6 @@ const App: React.FC = () => {
           });
           setShowPricingPaywall(false);
           setSelectedPlan(userSubscription?.plan_id || 'enterprise');
-        } else {
-          setShowPricingPaywall(true);
         }
       } else {
         setUser(null);
@@ -129,7 +125,7 @@ const App: React.FC = () => {
   const handleLogin = useCallback((username: string) => {
     setUser({ username });
     setShowHomePage(false);
-    setShowPricingPaywall(true); // Show pricing paywall after login
+    // Do not show paywall after login; will show on generate if needed
   }, []);
 
   const handleLogout = useCallback(() => {
@@ -174,11 +170,6 @@ const App: React.FC = () => {
     );
   }
 
-  // Show paywall only if user doesn't have access (not admin and no subscription)
-  if (showPricingPaywall && user && !selectedPlan && !isAdmin && !hasSubscription) {
-    return <PricingPaywall onSelectPlan={handleSelectPlan} />;
-  }
-
   return (
     <div className="min-h-screen bg-white font-sans">
       {user ? (
@@ -190,8 +181,15 @@ const App: React.FC = () => {
             </div>
           )}
           <main>
-            <CreationHub />
+            {(
+              <CreationHub {...({ onRequireSubscription: () => setShowPricingModal(true) } as any)} />
+            )}
           </main>
+          <PricingModal
+            isOpen={showPricingModal}
+            onClose={() => setShowPricingModal(false)}
+            onSuccess={() => setShowPricingModal(false)}
+          />
         </>
       ) : (
         <LoginPage onLogin={handleLogin} />

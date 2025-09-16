@@ -18,7 +18,11 @@ interface VideoCreation {
   videoUrl?: string;
 }
 
-const CreationHub: React.FC = () => {
+interface CreationHubProps {
+  onRequireSubscription?: () => void;
+}
+
+const CreationHub: React.FC<CreationHubProps> = ({ onRequireSubscription }) => {
   const [selectedAvatar, setSelectedAvatar] = useState<Avatar | null>(null);
   const [script, setScript] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -134,7 +138,12 @@ const CreationHub: React.FC = () => {
     // Check quota before generating
     const quota = await canGenerateVideo();
     if (!quota.canGenerate) {
-      setError(quota.message || "You have reached your monthly video generation limit. Please upgrade your plan to continue.");
+      // If the app provided a subscription handler, open the pricing modal instead of inline error
+      if (onRequireSubscription) {
+        onRequireSubscription();
+      } else {
+        setError(quota.message || "You have reached your monthly video generation limit. Please upgrade your plan to continue.");
+      }
       return;
     }
 
