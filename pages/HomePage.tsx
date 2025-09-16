@@ -129,7 +129,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
             </span>
           </div>
           <h1 className="text-4xl md:text-6xl font-bold mb-5 leading-tight">
-            The most realistic way to create <span className="text-blue-500">AI UGV videos</span>
+            The most realistic way to create <span className="text-blue-500">AI UGC videos</span>
           </h1>
           <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
             Write your script → Pick an avatar → Generate video
