@@ -14,7 +14,6 @@ import { isSuperAdmin, getUserSubscription } from './services/subscriptionServic
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [showHomePage, setShowHomePage] = useState(true);
-  const [showPricingPaywall, setShowPricingPaywall] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const [paymentSessionId, setPaymentSessionId] = useState<string | null>(null);
@@ -39,7 +38,6 @@ const App: React.FC = () => {
 
   // Navigation handler
   const handleGoToCreationHub = useCallback(() => {
-    setShowPricingPaywall(false);
     setShowHomePage(false);
     navigate('/');
   }, [navigate]);
@@ -98,19 +96,21 @@ const App: React.FC = () => {
         setIsAdmin(adminStatus);
         setHasSubscription(!!userSubscription);
         
-        // Super admins or users with subscriptions bypass paywall
-        if (adminStatus || userSubscription) {
-          console.log('User has access:', { 
-            isAdmin: adminStatus, 
-            subscription: userSubscription?.plan_name 
-          });
-          setShowPricingPaywall(false);
-          setSelectedPlan(userSubscription?.plan_id || 'enterprise');
+        // Set selected plan if user has subscription, but don't show paywall
+        if (userSubscription) {
+          setSelectedPlan(userSubscription.plan_id);
+        } else if (adminStatus) {
+          setSelectedPlan('enterprise');
         }
+        
+        console.log('User logged in:', { 
+          isAdmin: adminStatus, 
+          subscription: userSubscription?.plan_name,
+          directToCreationHub: true
+        });
       } else {
         setUser(null);
         setShowHomePage(true);
-        setShowPricingPaywall(false);
         setSelectedPlan(null);
         setIsAdmin(false);
         setHasSubscription(false);
@@ -125,7 +125,7 @@ const App: React.FC = () => {
   const handleLogin = useCallback((username: string) => {
     setUser({ username });
     setShowHomePage(false);
-    // Do not show paywall after login; will show on generate if needed
+    // User goes directly to creation hub - no paywall
   }, []);
 
   const handleLogout = useCallback(() => {
@@ -133,7 +133,6 @@ const App: React.FC = () => {
     supabase.auth.signOut();
     setUser(null);
     setShowHomePage(true);
-    setShowPricingPaywall(false);
     setSelectedPlan(null);
   }, []);
 
@@ -143,13 +142,10 @@ const App: React.FC = () => {
 
   const handleSelectPlan = useCallback((planId: string) => {
     setSelectedPlan(planId);
-    setShowPricingPaywall(false);
   }, []);
-
 
   const handlePaymentSuccess = useCallback(() => {
     setShowPaymentSuccess(false);
-    setShowPricingPaywall(false);
   }, []);
 
   if (showHomePage) {
