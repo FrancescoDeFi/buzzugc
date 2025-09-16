@@ -150,18 +150,30 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
                 <div className="aspect-[9/16] bg-black">
                   <video
                     src={v.src}
-                    muted
                     playsInline
                     preload="metadata"
                     className="w-full h-full object-cover"
                     onMouseEnter={(e) => {
                       const vid = e.currentTarget as HTMLVideoElement;
-                      vid.play().catch(() => {});
+                      // Try to play with sound first
+                      vid.muted = false;
+                      vid.play().catch(() => {
+                        // If autoplay with sound is blocked by the browser,
+                        // fall back to muted playback
+                        vid.muted = true;
+                        vid.play().catch(() => {});
+                      });
                     }}
                     onMouseLeave={(e) => {
                       const vid = e.currentTarget as HTMLVideoElement;
                       vid.pause();
                       vid.currentTime = 0;
+                    }}
+                    onClick={(e) => {
+                      // User gesture: toggle sound on click
+                      const vid = e.currentTarget as HTMLVideoElement;
+                      vid.muted = !vid.muted;
+                      vid.play().catch(() => {});
                     }}
                   />
                 </div>
