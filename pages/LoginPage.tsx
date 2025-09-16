@@ -125,15 +125,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             </div>
             <span className="text-xl font-bold text-gray-800">4.8</span>
           </div>
-          <p className="text-gray-600 mb-4">Used by 40,000+ brands including</p>
-          <div className="flex items-center space-x-6 opacity-60">
-            <div className="text-lg font-bold text-gray-700">nutr.</div>
-            <div className="text-lg font-bold text-gray-700">PRIME</div>
-            <div className="bg-gray-800 text-white px-3 py-1 rounded text_sm">Häagen-Dazs</div>
-            <div className="text-lg font-bold text-gray-700">BREZ</div>
-            <div className="bg-black text-white px-2 py-1 rounded text-sm font-bold">riev</div>
-            <div className="bg-gray-800 text-white px-3 py-1 rounded text-sm">DECATHLON</div>
-          </div>
+          <p className="text-gray-600">Used by thousands of Brands</p>
         </div>
       </div>
 
