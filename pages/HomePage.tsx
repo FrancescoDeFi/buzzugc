@@ -80,23 +80,23 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mt-3 rounded-2xl border border-gray-200 bg-white/90 backdrop-blur-sm shadow-sm">
-            <div className="flex items-center justify-between h-16 px-4">
+          <div className="mt-2 rounded-2xl border border-gray-200 bg-white/90 backdrop-blur-sm shadow-sm">
+            <div className="flex items-center justify-between h-14 px-3">
               {/* Brand */}
-              <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 bg-black rounded-lg flex items-center justify-center">
-                  <span className="text-white font-extrabold text-lg">B</span>
+              <div className="flex items-center space-x-2.5">
+                <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+                  <span className="text-white font-extrabold text-base">B</span>
                 </div>
-                <span className="text-xl font-semibold text-gray-900">buzzUGC</span>
+                <span className="text-lg font-semibold text-gray-900">buzzUGC</span>
               </div>
 
               {/* Menu */}
-              <div className="hidden md:flex items-center space-x-8 text-gray-900">
-                <a href="#features" className="font-medium hover:text-black transition-colors">Features</a>
-                <a href="#affiliate" className="font-medium hover:text-black transition-colors">Affiliate</a>
-                <a href="/pricing" className="font-medium hover:text-black transition-colors">Pricing</a>
-                <a href="#languages" className="font-medium hover:text-black transition-colors">Languages</a>
-                <a href="#adfactory" className="font-medium hover:text-black transition-colors">Ad Factory</a>
+              <div className="hidden md:flex items-center space-x-6 text-gray-900">
+                <a href="#features" className="font-medium text-sm hover:text-black transition-colors">Features</a>
+                <a href="#affiliate" className="font-medium text-sm hover:text-black transition-colors">Affiliate</a>
+                <a href="/pricing" className="font-medium text-sm hover:text-black transition-colors">Pricing</a>
+                <a href="#languages" className="font-medium text-sm hover:text-black transition-colors">Languages</a>
+                <a href="#adfactory" className="font-medium text-sm hover:text-black transition-colors">Ad Factory</a>
               </div>
 
               {/* Actions */}
@@ -104,13 +104,13 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
                 <div className="hidden md:block w-px h-8 bg-gray-200" />
                 <button
                   onClick={onNavigateToLogin}
-                  className="px-4 py-2 rounded-xl bg-gray-100 text-gray-900 font-medium hover:bg-gray-200 transition-colors"
+                  className="px-3 py-1.5 rounded-xl bg-gray-100 text-gray-900 font-medium text-sm hover:bg-gray-200 transition-colors"
                 >
                   Login
                 </button>
                 <button
                   onClick={onNavigateToLogin}
-                  className="px-5 py-2 rounded-xl bg-gray-900 text-white font-semibold shadow hover:bg-black transition-colors"
+                  className="px-4 py-2 rounded-xl bg-gray-900 text-white font-semibold text-sm shadow hover:bg-black transition-colors"
                 >
                   Get Started <span className="ml-1">›</span>
                 </button>
@@ -121,18 +121,17 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4">
+      <section className="pt-28 pb-16 px-4">
         <div className="max-w-6xl mx-auto text-center">
           <div className="mb-6">
             <span className="text-sm text-gray-600 bg-gray-100 px-4 py-2 rounded-full">
               Create AI videos for your 🎯
             </span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            The fastest way to<br />
-            create <span className="text-blue-500">AI videos</span>
+          <h1 className="text-4xl md:text-6xl font-bold mb-5 leading-tight">
+            The most realistic way to create <span className="text-blue-500">AI UGV videos</span>
           </h1>
-          <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
             Write your script → Pick an avatar → Generate video
           </p>
           <button
