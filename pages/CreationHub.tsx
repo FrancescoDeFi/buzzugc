@@ -138,13 +138,15 @@ const CreationHub: React.FC<CreationHubProps> = ({ onRequireSubscription }) => {
     // Check quota before generating
     const quota = await canGenerateVideo();
     if (!quota.canGenerate) {
-      // If the app provided a subscription handler, open the pricing modal instead of inline error
+      // Always open the pricing modal for unsubscribed users
       if (onRequireSubscription) {
         onRequireSubscription();
+        return;
       } else {
+        // Fallback if no modal handler provided
         setError(quota.message || "You have reached your monthly video generation limit. Please upgrade your plan to continue.");
+        return;
       }
-      return;
     }
 
     setIsLoading(true);
@@ -430,7 +432,7 @@ const CreationHub: React.FC<CreationHubProps> = ({ onRequireSubscription }) => {
             <div className="flex flex-col items-end space-y-2">
               <button
                 onClick={handleGenerateVideo}
-                disabled={!selectedAvatar || !script.trim() || !quotaInfo.canGenerate}
+                disabled={!selectedAvatar || !script.trim()}
                 className="bg-black hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-6 py-3 rounded-full font-medium transition-all shadow-lg flex items-center"
               >
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -439,12 +441,8 @@ const CreationHub: React.FC<CreationHubProps> = ({ onRequireSubscription }) => {
                 Generate Video
               </button>
               
-              {quotaInfo.message && (
-                <div className={`text-xs px-2 py-1 rounded-full ${
-                  quotaInfo.canGenerate 
-                    ? 'bg-green-100 text-green-700' 
-                    : 'bg-red-100 text-red-700'
-                }`}>
+              {quotaInfo.message && quotaInfo.canGenerate && (
+                <div className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">
                   {quotaInfo.message}
                 </div>
               )}
