@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { supabase } from '../services/supabaseClient';
+import img1 from '../images/image1.png';
+import img2 from '../images/image2.png';
+import img3 from '../images/image3.png';
 
 interface LoginPageProps {
   onLogin: (username: string) => void;
@@ -101,73 +104,15 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       <div className="hidden lg:flex lg:w-2/3 bg-white p-8">
         <div className="w-full flex items-center justify-center">
           <div className="grid grid-cols-3 gap-6 max-w-4xl">
-            {/* Video Example 1 - Gaming */}
-            <div className="relative aspect-[9/16] bg-gradient-to-br from-blue-900 to-purple-900 rounded-2xl overflow-hidden">
-              <div className="absolute inset-0 bg-black/20"></div>
-              <div className="absolute bottom-4 left-4 right-4">
-                <div className="bg-white/90 backdrop-blur-sm rounded-lg p-3">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">🎮</span>
-                    </div>
-                    <div>
-                      <div className="text-xs font-semibold">Gaming Content</div>
-                      <div className="text-xs text-gray-600">Strategy Tutorial</div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-gray-700">"Advanced strategies for competitive gaming..."</div>
-                </div>
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                  <div className="w-0 h-0 border-l-4 border-l-white border-y-2 border-y-transparent ml-1"></div>
-                </div>
-              </div>
+            {/* AI demo images (uniform size and layout) */}
+            <div className="relative aspect-[9/16] rounded-2xl overflow-hidden bg-gray-100">
+              <img src={img1} alt="AI Avatar Demo 1" className="w-full h-full object-cover" />
             </div>
-
-            {/* Video Example 2 - E-commerce */}
-            <div className="relative aspect-[9/16] bg-gradient-to-br from-teal-400 to-blue-500 rounded-2xl overflow-hidden">
-              <div className="absolute inset-0 bg-black/10"></div>
-              <div className="absolute top-4 left-4 right-4">
-                <div className="bg-black/80 backdrop-blur-sm rounded-lg p-2">
-                  <div className="text-white text-xs font-bold">golf</div>
-                  <div className="text-white/80 text-xs">Shop Now - Free Shipping</div>
-                </div>
-              </div>
-              <div className="absolute bottom-4 left-4 right-4">
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="bg-cyan-400 rounded-lg p-2">
-                    <div className="text-xs font-bold text-black">Ashwagandha Gummies</div>
-                    <div className="text-xs text-black/70">#1</div>
-                  </div>
-                  <div className="bg-red-500 rounded-lg p-2">
-                    <div className="text-xs font-bold text-white">Apple Cider Vinegar Gummies</div>
-                    <div className="text-xs text-white/70">#1</div>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                  <div className="w-0 h-0 border-l-4 border-l-white border-y-2 border-y-transparent ml-1"></div>
-                </div>
-              </div>
+            <div className="relative aspect-[9/16] rounded-2xl overflow-hidden bg-gray-100">
+              <img src={img2} alt="AI Avatar Demo 2" className="w-full h-full object-cover" />
             </div>
-
-            {/* Video Example 3 - Lifestyle */}
-            <div className="relative aspect-[9/16] bg-gradient-to-br from-amber-200 to-orange-300 rounded-2xl overflow-hidden">
-              <div className="absolute inset-0 bg-black/5"></div>
-              <div className="absolute bottom-4 left-4 right-4">
-                <div className="bg-white/90 backdrop-blur-sm rounded-lg p-3">
-                  <div className="text-xs text-gray-700 mb-2">"- glass of water"</div>
-                  <div className="text-xs text-gray-700 mb-2">"- a few drops of milano drops"</div>
-                  <div className="text-xs text-gray-700">"- mix and enjoy 😊"</div>
-                </div>
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                  <div className="w-0 h-0 border-l-4 border-l-white border-y-2 border-y-transparent ml-1"></div>
-                </div>
-              </div>
+            <div className="relative aspect-[9/16] rounded-2xl overflow-hidden bg-gray-100">
+              <img src={img3} alt="AI Avatar Demo 3" className="w-full h-full object-cover" />
             </div>
           </div>
         </div>
