@@ -101,20 +101,51 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan }) => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-100 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-center">
-          <div className="flex items-center">
-            <div className="w-8 h-8 bg-black rounded-md flex items-center justify-center">
-              <span className="text-white font-bold text-lg">B</span>
+      {/* Header (homepage style) */}
+      <nav className="fixed top-0 w-full z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mt-2 rounded-2xl border border-gray-200 bg-white/90 backdrop-blur-sm shadow-sm">
+            <div className="flex items-center justify-between h-14 px-3">
+              {/* Brand */}
+              <a href="/" className="flex items-center space-x-2.5 hover:opacity-90 transition-opacity">
+                <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+                  <span className="text-white font-extrabold text-base">B</span>
+                </div>
+                <span className="text-lg font-semibold text-gray-900">buzzUGC</span>
+              </a>
+
+              {/* Menu */}
+              <div className="hidden md:flex items-center space-x-6 text-gray-900">
+                <a href="/#features" className="font-medium text-sm hover:text-black transition-colors">Features</a>
+                <a href="/#affiliate" className="font-medium text-sm hover:text-black transition-colors">Affiliate</a>
+                <a href="/pricing" className="font-medium text-sm hover:text-black transition-colors">Pricing</a>
+                <a href="/#languages" className="font-medium text-sm hover:text-black transition-colors">Languages</a>
+                <a href="/#adfactory" className="font-medium text-sm hover:text-black transition-colors">Ad Factory</a>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center space-x-3">
+                <div className="hidden md:block w-px h-8 bg-gray-200" />
+                <a
+                  href="/"
+                  className="px-3 py-1.5 rounded-xl bg-gray-100 text-gray-900 font-medium text-sm hover:bg-gray-200 transition-colors"
+                >
+                  Login
+                </a>
+                <a
+                  href="/"
+                  className="px-4 py-2 rounded-xl bg-gray-900 text-white font-semibold text-sm shadow hover:bg-black transition-colors"
+                >
+                  Get Started <span className="ml-1">›</span>
+                </a>
+              </div>
             </div>
-            <span className="ml-3 text-xl font-semibold text-gray-900">buzzUGC</span>
           </div>
         </div>
-      </div>
+      </nav>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-7xl mx-auto px-6 pt-28 pb-16">
         {/* Header Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
