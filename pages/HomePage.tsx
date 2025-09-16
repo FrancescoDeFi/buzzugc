@@ -78,36 +78,43 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-50 border-b border-gray-100">
+      <nav className="fixed top-0 w-full z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-8">
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-black rounded-md flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">B</span>
+          <div className="mt-3 rounded-2xl border border-gray-200 bg-white/90 backdrop-blur-sm shadow-sm">
+            <div className="flex items-center justify-between h-16 px-4">
+              {/* Brand */}
+              <div className="flex items-center space-x-3">
+                <div className="w-9 h-9 bg-black rounded-lg flex items-center justify-center">
+                  <span className="text-white font-extrabold text-lg">B</span>
                 </div>
-                <span className="ml-2 text-xl font-semibold">buzzUGC</span>
+                <span className="text-xl font-semibold text-gray-900">buzzUGC</span>
               </div>
-              <div className="hidden md:flex space-x-6">
-                <a href="#features" className="text-gray-700 hover:text-black transition-colors">Features</a>
-                <a href="/pricing" className="text-gray-700 hover:text-black transition-colors">Pricing</a>
-                <a href="#showcase" className="text-gray-700 hover:text-black transition-colors">Examples</a>
-                <a href="#faq" className="text-gray-700 hover:text-black transition-colors">FAQ</a>
+
+              {/* Menu */}
+              <div className="hidden md:flex items-center space-x-8 text-gray-900">
+                <a href="#features" className="font-medium hover:text-black transition-colors">Features</a>
+                <a href="#affiliate" className="font-medium hover:text-black transition-colors">Affiliate</a>
+                <a href="/pricing" className="font-medium hover:text-black transition-colors">Pricing</a>
+                <a href="#languages" className="font-medium hover:text-black transition-colors">Languages</a>
+                <a href="#adfactory" className="font-medium hover:text-black transition-colors">Ad Factory</a>
               </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={onNavigateToLogin}
-                className="text-gray-700 hover:text-black transition-colors"
-              >
-                Login
-              </button>
-              <button
-                onClick={onNavigateToLogin}
-                className="bg-black text-white px-5 py-2 rounded-full hover:bg-gray-800 transition-colors"
-              >
-                Get Started →
-              </button>
+
+              {/* Actions */}
+              <div className="flex items-center space-x-3">
+                <div className="hidden md:block w-px h-8 bg-gray-200" />
+                <button
+                  onClick={onNavigateToLogin}
+                  className="px-4 py-2 rounded-xl bg-gray-100 text-gray-900 font-medium hover:bg-gray-200 transition-colors"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={onNavigateToLogin}
+                  className="px-5 py-2 rounded-xl bg-gray-900 text-white font-semibold shadow hover:bg-black transition-colors"
+                >
+                  Get Started <span className="ml-1">›</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
