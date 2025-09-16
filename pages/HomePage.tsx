@@ -150,10 +150,19 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
                 <div className="aspect-[9/16] bg-black">
                   <video
                     src={v.src}
-                    controls
+                    muted
                     playsInline
                     preload="metadata"
                     className="w-full h-full object-cover"
+                    onMouseEnter={(e) => {
+                      const vid = e.currentTarget as HTMLVideoElement;
+                      vid.play().catch(() => {});
+                    }}
+                    onMouseLeave={(e) => {
+                      const vid = e.currentTarget as HTMLVideoElement;
+                      vid.pause();
+                      vid.currentTime = 0;
+                    }}
                   />
                 </div>
                 <div className="absolute bottom-4 left-4 right-4">
