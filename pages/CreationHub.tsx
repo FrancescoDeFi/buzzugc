@@ -541,21 +541,7 @@ const CreationHub: React.FC<CreationHubProps> = ({ onRequireSubscription }) => {
                   </div>
                 </div>
 
-                {/* Special Filters */}
-                <div className="space-y-3 text-sm mb-6">
-                  <div className="font-bold text-gray-900">Features</div>
-                  <div className="space-y-1">
-                    <div className="text-gray-600 hover:text-black cursor-pointer">Newly Added</div>
-                    <div className="text-gray-600 hover:text-black cursor-pointer flex items-center">
-                      <span>Premium Quality</span>
-                      <span className="ml-1">💎</span>
-                    </div>
-                    <div className="text-gray-600 hover:text-black cursor-pointer flex items-center">
-                      <span>HD Quality</span>
-                      <span className="ml-1">🎥</span>
-                    </div>
-                  </div>
-                </div>
+                {/* Special Filters removed as requested */}
 
                 {/* Situation Filter */}
                 <div>
