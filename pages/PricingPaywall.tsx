@@ -281,6 +281,19 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan }) => {
             </div>
           </div>
         </div>
+
+        {/* Support Link */}
+        <div className="mt-12 text-center text-sm text-gray-600">
+          For support contact on Telegram: {' '}
+          <a
+            href="https://t.me/buzzugc"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline"
+          >
+            https://t.me/buzzugc
+          </a>
+        </div>
       </div>
     </div>
   );
