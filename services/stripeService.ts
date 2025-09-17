@@ -36,6 +36,21 @@ export interface StripePrice {
 // Stripe price configurations with your actual product IDs
 export const STRIPE_PRICES: StripePrice[] = [
   {
+    productId: 'prod_T4ZX4YhZmHIeXs', // Stripe product ID for Basic plan
+    priceId: 'price_1S8QOcCyEFxXrv4DmwLQiRSJ', // Price ID for Basic plan
+    planId: 'basic',
+    name: 'Basic',
+    amount: 900, // $9.00
+    currency: 'usd',
+    interval: 'month',
+    features: [
+      '10 video creations per month',
+      'Access to core AI creators',
+      'Standard processing speed',
+      'Email support'
+    ]
+  },
+  {
     productId: 'prod_T3MDxu75j4N3Wx', // Stripe product ID for Startup plan
     priceId: 'price_1S7FVWCyEFxXrv4D5I2muWZ4', // Price ID for Startup plan
     planId: 'starter',

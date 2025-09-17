@@ -37,10 +37,12 @@ const PaymentSuccess: React.FC<PaymentSuccessProps> = ({ sessionId, planId, onCo
 
   const getPlanName = (planId?: string) => {
     switch (planId) {
+      case 'basic':
+        return 'Basic';
       case 'starter':
         return 'Starter';
       case 'professional':
-        return 'Professional';
+        return 'Growth';
       default:
         return 'Premium';
     }
@@ -103,17 +105,25 @@ const PaymentSuccess: React.FC<PaymentSuccessProps> = ({ sessionId, planId, onCo
         <div className="bg-gray-50 rounded-lg p-6 mb-8 text-left">
           <h3 className="font-semibold text-gray-900 mb-3">✨ What's unlocked:</h3>
           <ul className="space-y-2 text-sm text-gray-600">
+            {planId === 'basic' && (
+              <>
+                <li>• 10 AI video creations per month</li>
+                <li>• HD quality videos</li>
+                <li>• Access to core AI creators</li>
+                <li>• Email support</li>
+              </>
+            )}
             {planId === 'starter' && (
               <>
-                <li>• 5 AI video creations per month</li>
+                <li>• 30 AI video creations per month</li>
                 <li>• HD quality videos</li>
-                <li>• Basic AI avatars</li>
-                <li>• Email support</li>
+                <li>• 50+ realistic AI avatars</li>
+                <li>• Custom AI hooks</li>
               </>
             )}
             {planId === 'professional' && (
               <>
-                <li>• 10 AI video creations per month</li>
+                <li>• 50 AI video creations per month</li>
                 <li>• HD & 4K quality videos</li>
                 <li>• Premium AI avatars</li>
                 <li>• Advanced voice cloning</li>

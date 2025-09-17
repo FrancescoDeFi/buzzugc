@@ -93,10 +93,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
               {/* Menu */}
               <div className="hidden md:flex items-center space-x-6 text-gray-900">
                 <a href="#features" className="font-medium text-sm hover:text-black transition-colors">Features</a>
-                <a href="#affiliate" className="font-medium text-sm hover:text-black transition-colors">Affiliate</a>
                 <a href="/pricing" className="font-medium text-sm hover:text-black transition-colors">Pricing</a>
-                <a href="#languages" className="font-medium text-sm hover:text-black transition-colors">Languages</a>
-                <a href="#adfactory" className="font-medium text-sm hover:text-black transition-colors">Ad Factory</a>
               </div>
 
               {/* Actions */}

@@ -5,8 +5,8 @@
 CREATE TABLE IF NOT EXISTS public.user_subscriptions (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-    plan_id TEXT NOT NULL, -- 'starter', 'professional', 'enterprise'
-    plan_name TEXT NOT NULL, -- 'Starter', 'Growth', 'Enterprise'
+    plan_id TEXT NOT NULL, -- 'basic', 'starter', 'professional', 'enterprise'
+    plan_name TEXT NOT NULL, -- 'Basic', 'Starter', 'Growth', 'Enterprise'
     stripe_customer_id TEXT,
     stripe_subscription_id TEXT,
     status TEXT DEFAULT 'active', -- 'active', 'canceled', 'past_due', 'unpaid'

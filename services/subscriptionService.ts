@@ -107,14 +107,15 @@ export const getUserSubscription = async (userId?: string): Promise<UserSubscrip
 /**
  * Check if user has access to a specific plan or feature
  */
-export const hasAccess = async (requiredPlan: 'starter' | 'professional' | 'enterprise'): Promise<boolean> => {
+export const hasAccess = async (requiredPlan: 'basic' | 'starter' | 'professional' | 'enterprise'): Promise<boolean> => {
   const subscription = await getUserSubscription();
   if (!subscription || subscription.status !== 'active') return false;
 
   const planHierarchy = {
-    starter: 1,
-    professional: 2,
-    enterprise: 3
+    basic: 1,
+    starter: 2,
+    professional: 3,
+    enterprise: 4
   };
 
   const userPlanLevel = planHierarchy[subscription.plan_id as keyof typeof planHierarchy] || 0;
@@ -144,6 +145,19 @@ export const getUserPlanLimits = async () => {
   }
 
   switch (subscription.plan_id) {
+    case 'basic':
+      return {
+        plan: 'basic',
+        monthlyCreations: 10,
+        hasHDQuality: true,
+        hasPremiumAvatars: false,
+        hasAdvancedVoices: false,
+        hasPrioritySupport: false,
+        hasAnalytics: false,
+        hasCustomBackgrounds: false,
+        hasBulkTools: false
+      };
+    
     case 'starter':
       return {
         plan: 'starter',

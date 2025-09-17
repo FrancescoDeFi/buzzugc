@@ -11,6 +11,20 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan }) => {
 
   const plans = [
     {
+      id: 'basic',
+      name: 'Basic',
+      price: 9,
+      creations: 10,
+      features: [
+        '10 video creations per month',
+        'Access to core AI creators',
+        'Standard processing speed',
+        'Email support'
+      ],
+      popular: false,
+      buttonText: 'Start with Basic'
+    },
+    {
       id: 'starter',
       name: 'Starter',
       price: 49,
@@ -117,10 +131,7 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan }) => {
               {/* Menu */}
               <div className="hidden md:flex items-center space-x-6 text-gray-900">
                 <a href="/#features" className="font-medium text-sm hover:text-black transition-colors">Features</a>
-                <a href="/#affiliate" className="font-medium text-sm hover:text-black transition-colors">Affiliate</a>
                 <a href="/pricing" className="font-medium text-sm hover:text-black transition-colors">Pricing</a>
-                <a href="/#languages" className="font-medium text-sm hover:text-black transition-colors">Languages</a>
-                <a href="/#adfactory" className="font-medium text-sm hover:text-black transition-colors">Ad Factory</a>
               </div>
 
               {/* Actions */}

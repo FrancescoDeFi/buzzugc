@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import HomePage from './pages/HomePage';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -9,8 +10,10 @@ if (!rootElement) {
 }
 
 const root = ReactDOM.createRoot(rootElement);
+const target = (import.meta as any).env?.VITE_DEPLOY_TARGET as string | undefined;
+
 root.render(
   <React.StrictMode>
-    <App />
+    {target === 'marketing' ? <HomePage /> : <App />}
   </React.StrictMode>
 );

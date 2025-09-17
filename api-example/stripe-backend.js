@@ -17,11 +17,20 @@ const supabase = createClient(
 // Price configurations (should match frontend)
 // Note: Replace the price IDs with your actual Price IDs from Stripe Dashboard
 const PRICE_CONFIGS = {
+  basic: {
+    productId: 'prod_T4ZX4YhZmHIeXs', // Your actual Stripe Product ID for Basic plan
+    priceId: 'price_1S8QOcCyEFxXrv4DmwLQiRSJ', // Your actual Price ID for Basic plan
+    features: {
+      creationsLimit: 10,
+      hdQuality: true,
+      premiumAvatars: false,
+    }
+  },
   starter: {
     productId: 'prod_T3MDxu75j4N3Wx', // Your actual Stripe Product ID for Startup plan
     priceId: 'price_1S7FVWCyEFxXrv4D5I2muWZ4', // Your actual Price ID for Startup plan
     features: {
-      creationsLimit: 5,
+      creationsLimit: 30,
       hdQuality: true,
       premiumAvatars: false,
     }
@@ -30,7 +39,7 @@ const PRICE_CONFIGS = {
     productId: 'prod_T3MFZuYnkHPND9', // Your actual Stripe Product ID for Growth plan
     priceId: 'price_1S7FX0CyEFxXrv4DtPmuax2n', // Your actual Price ID for Growth plan
     features: {
-      creationsLimit: 10,
+      creationsLimit: 50,
       hdQuality: true,
       premiumAvatars: true,
     }

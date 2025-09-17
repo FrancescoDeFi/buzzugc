@@ -40,6 +40,20 @@ const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, onSuccess 
 
   const plans = [
     {
+      id: 'basic',
+      name: 'Basic',
+      price: 9,
+      creations: 10,
+      features: [
+        '10 video creations per month',
+        'Access to core AI creators',
+        'Standard processing speed',
+        'Email support',
+      ],
+      popular: false,
+      buttonText: 'Choose Basic'
+    },
+    {
       id: 'starter',
       name: 'Starter',
       price: 49,
@@ -143,5 +157,4 @@ const PricingModal: React.FC<PricingModalProps> = ({ isOpen, onClose, onSuccess 
 };
 
 export default PricingModal;
-
 
