@@ -496,6 +496,18 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigateToLogin }) => {
           </div>
           <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
             <p>© 2025 BuzzUGC. All rights reserved.</p>
+            <p className="mt-2">
+              For support contact on Telegram:
+              {' '}
+              <a
+                href="https://t.me/buzzugc"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:underline"
+              >
+                https://t.me/buzzugc
+              </a>
+            </p>
           </div>
         </div>
       </footer>
