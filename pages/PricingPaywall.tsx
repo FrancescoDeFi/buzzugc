@@ -113,6 +113,9 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan }) => {
     }
   };
 
+  const standardPlans = plans.filter(plan => plan.id !== 'custom');
+  const enterprisePlan = plans.find(plan => plan.id === 'custom');
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header (homepage style) */}
@@ -170,8 +173,8 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan }) => {
         {/* Debug info removed */}
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((plan) => (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {standardPlans.map((plan) => (
             <div
               key={plan.id}
               className={`relative bg-white rounded-2xl border-2 transition-all duration-300 hover:shadow-xl ${
@@ -242,6 +245,47 @@ const PricingPaywall: React.FC<PricingPaywallProps> = ({ onSelectPlan }) => {
             </div>
           ))}
         </div>
+
+        {enterprisePlan && (
+          <div className="mt-12 max-w-5xl mx-auto">
+            <div
+              className={`relative bg-white rounded-2xl border-2 transition-all duration-300 hover:shadow-xl ${
+                enterprisePlan.popular
+                  ? 'border-black shadow-lg scale-105'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <div className="p-8 md:p-10">
+                <div className="md:flex md:items-center md:justify-between">
+                  <div className="mb-8 md:mb-0">
+                    <h3 className="text-3xl font-bold text-gray-900 mb-2">{enterprisePlan.name}</h3>
+                    <div className="text-gray-600 text-lg">
+                      <span className="font-semibold">{enterprisePlan.creations}</span> video creations
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handleSelectPlan(enterprisePlan.id)}
+                    disabled={isProcessing && selectedPlan === enterprisePlan.id}
+                    className="w-full md:w-auto md:min-w-[220px] py-4 px-8 rounded-xl font-semibold bg-black text-white hover:bg-gray-800 transition-all"
+                  >
+                    {isProcessing && selectedPlan === enterprisePlan.id ? 'Opening email…' : enterprisePlan.buttonText}
+                  </button>
+                </div>
+
+                <ul className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {enterprisePlan.features.map((feature, index) => (
+                    <li key={index} className="flex items-start">
+                      <svg className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-gray-700">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Bottom Features */}
         <div className="mt-16 text-center">

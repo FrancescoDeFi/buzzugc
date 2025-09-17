@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import HomePage from './pages/HomePage';
+import { Analytics } from '@vercel/analytics/react';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -15,5 +16,6 @@ const target = (import.meta as any).env?.VITE_DEPLOY_TARGET as string | undefine
 root.render(
   <React.StrictMode>
     {target === 'marketing' ? <HomePage /> : <App />}
+    <Analytics />
   </React.StrictMode>
 );
